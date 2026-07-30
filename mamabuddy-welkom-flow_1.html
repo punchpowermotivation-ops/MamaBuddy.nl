@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>MamaBuddy — Welkom</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --rose:#F2567A;--rose-light:#FDE8EE;--rose-dark:#B83055;--rose-soft:#FBEEF1;
+  --cream:#FDF8F3;--dark:#1E1A18;--navy:#1E2640;--mid:#5C4F47;--muted:#9B8F88;
+  --sand:#F5EDE4;--green:#2D8C6A;--green-light:#E2F4EC;--line:#EFE7DD;--white:#FFFFFF;
+}
+body{font-family:'DM Sans',sans-serif;background:#0d0b0a;color:var(--dark);display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;gap:24px;flex-wrap:wrap}
+
+.phone{
+  width:390px;height:844px;background:var(--cream);
+  border-radius:44px;position:relative;overflow:hidden;
+  box-shadow:0 40px 100px rgba(0,0,0,.5),0 0 0 11px #16110f,0 0 0 13px #2a2320;
+}
+.notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:150px;height:30px;background:#16110f;border-radius:0 0 20px 20px;z-index:200}
+.statusbar{position:absolute;top:0;left:0;right:0;height:48px;display:flex;align-items:center;justify-content:space-between;padding:14px 28px 0;font-size:14px;font-weight:600;z-index:150}
+.statusbar .icons{display:flex;gap:6px;font-size:12px}
+
+.screen{position:absolute;inset:0;padding-top:48px;display:none;flex-direction:column}
+.screen.active{display:flex;animation:fade .4s ease}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+
+.label{position:absolute;top:-40px;left:50%;transform:translateX(-50%);color:var(--muted);font-size:13px;font-weight:500;white-space:nowrap}
+
+/* ═══════════ WELCOME SCREEN ═══════════ */
+#welcome{background:linear-gradient(165deg,#1E2640 0%,#14110f 100%);padding-top:48px}
+#welcome::before{content:'';position:absolute;top:-60px;right:-80px;width:280px;height:280px;background:radial-gradient(circle,rgba(242,86,122,.22) 0%,transparent 65%);pointer-events:none}
+#welcome::after{content:'';position:absolute;bottom:120px;left:-90px;width:240px;height:240px;background:radial-gradient(circle,rgba(242,86,122,.1) 0%,transparent 65%);pointer-events:none}
+
+.w-content{flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 34px;position:relative;z-index:2}
+.w-logo{margin-bottom:44px;animation:fadeUp .7s ease both}
+.w-logo svg{width:210px}
+.w-hero{animation:fadeUp .7s .15s ease both}
+.w-hero h1{font-family:'Fraunces',serif;font-size:40px;font-weight:400;color:white;line-height:1.12;margin-bottom:16px}
+.w-hero h1 em{font-style:italic;color:var(--rose)}
+.w-hero p{font-size:16px;color:rgba(255,255,255,.6);line-height:1.6;font-weight:300}
+
+/* soft chat teaser */
+.w-teaser{margin-top:34px;animation:fadeUp .7s .3s ease both}
+.teaser-bubble{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);border-radius:18px 18px 18px 5px;padding:14px 18px;font-size:14px;color:rgba(255,255,255,.85);line-height:1.5;max-width:88%;display:flex;gap:10px;align-items:flex-start}
+.teaser-av{width:26px;height:26px;background:var(--rose-light);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.teaser-av svg{width:14px;height:14px;fill:var(--rose)}
+
+.w-actions{padding:0 34px 44px;position:relative;z-index:2;animation:fadeUp .7s .45s ease both}
+.w-primary{width:100%;background:var(--rose);color:white;border:none;border-radius:16px;padding:17px;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:600;cursor:pointer;transition:background .2s,transform .15s;margin-bottom:12px}
+.w-primary:active{background:var(--rose-dark);transform:scale(.98)}
+.w-secondary{width:100%;background:transparent;color:rgba(255,255,255,.75);border:none;padding:8px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer}
+.w-secondary u{color:white}
+.w-trust{text-align:center;font-size:12px;color:rgba(255,255,255,.4);margin-top:14px;display:flex;align-items:center;justify-content:center;gap:6px}
+.w-trust svg{width:12px;height:12px;stroke:rgba(255,255,255,.35);fill:none}
+
+/* ═══════════ EMAIL INPUT SCREEN ═══════════ */
+#emailScreen{background:var(--cream)}
+.e-top{padding:12px 24px;display:flex;align-items:center}
+.e-back{background:var(--sand);border:none;width:40px;height:40px;border-radius:50%;font-size:18px;cursor:pointer;color:var(--dark);display:flex;align-items:center;justify-content:center}
+.e-body{flex:1;padding:24px 34px 0}
+.e-icon{width:60px;height:60px;background:var(--rose-light);border-radius:18px;display:flex;align-items:center;justify-content:center;margin-bottom:24px}
+.e-icon svg{width:30px;height:30px;fill:var(--rose)}
+.e-body h2{font-family:'Fraunces',serif;font-size:30px;font-weight:400;color:var(--dark);line-height:1.2;margin-bottom:10px}
+.e-body p{font-size:15px;color:var(--mid);line-height:1.6;margin-bottom:30px}
+.e-field{margin-bottom:16px}
+.e-field label{display:block;font-size:13px;font-weight:600;color:var(--dark);margin-bottom:8px}
+.e-field input{width:100%;background:var(--white);border:1.5px solid var(--line);border-radius:14px;padding:16px 18px;font-family:'DM Sans',sans-serif;font-size:16px;color:var(--dark);outline:none;transition:border-color .2s}
+.e-field input:focus{border-color:var(--rose)}
+.e-field input::placeholder{color:var(--muted)}
+.e-submit{width:100%;background:var(--rose);color:white;border:none;border-radius:14px;padding:16px;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:600;cursor:pointer;transition:background .2s,transform .15s}
+.e-submit:active{background:var(--rose-dark);transform:scale(.98)}
+.e-privacy{font-size:12px;color:var(--muted);text-align:center;line-height:1.5;margin-top:20px;padding:0 10px}
+.e-privacy a{color:var(--rose);text-decoration:none}
+
+/* ═══════════ CHECK EMAIL SCREEN ═══════════ */
+#sentScreen{background:var(--cream)}
+.sent-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 40px}
+.sent-icon{width:96px;height:96px;background:var(--rose-light);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:28px;animation:pop .5s ease}
+@keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+.sent-icon svg{width:48px;height:48px;fill:var(--rose)}
+.sent-body h2{font-family:'Fraunces',serif;font-size:28px;font-weight:400;color:var(--dark);line-height:1.25;margin-bottom:12px}
+.sent-body p{font-size:15px;color:var(--mid);line-height:1.6;margin-bottom:8px}
+.sent-email{font-weight:600;color:var(--dark)}
+.sent-hint{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:16px 18px;margin-top:28px;font-size:13px;color:var(--mid);line-height:1.5}
+.sent-hint strong{color:var(--dark)}
+.sent-resend{background:none;border:none;color:var(--rose);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;margin-top:24px}
+.sent-demo{margin-top:30px;background:var(--navy);color:white;border:none;border-radius:14px;padding:14px 24px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer}
+
+/* ═══════════ ONBOARDING SCREEN ═══════════ */
+#onboarding{background:var(--cream)}
+.ob-top{padding:16px 24px;display:flex;align-items:center;gap:12px}
+.ob-progress{flex:1;height:4px;background:var(--sand);border-radius:100px;overflow:hidden}
+.ob-progress-fill{height:100%;background:var(--rose);border-radius:100px;width:50%;transition:width .4s}
+.ob-body{flex:1;padding:20px 34px 0;overflow-y:auto}
+.ob-body::-webkit-scrollbar{width:0}
+.ob-step-label{font-size:13px;font-weight:600;color:var(--rose);letter-spacing:.5px;margin-bottom:10px}
+.ob-body h2{font-family:'Fraunces',serif;font-size:28px;font-weight:400;color:var(--dark);line-height:1.2;margin-bottom:8px}
+.ob-body > p{font-size:15px;color:var(--mid);line-height:1.6;margin-bottom:28px}
+.ob-field{margin-bottom:18px}
+.ob-field label{display:block;font-size:13px;font-weight:600;color:var(--dark);margin-bottom:8px}
+.ob-field input{width:100%;background:var(--white);border:1.5px solid var(--line);border-radius:14px;padding:15px 18px;font-family:'DM Sans',sans-serif;font-size:16px;color:var(--dark);outline:none}
+.ob-field input:focus{border-color:var(--rose)}
+.child-row{display:flex;gap:10px;margin-bottom:12px}
+.child-row input:first-child{flex:2}
+.child-row input:last-child{flex:1}
+.ob-add-child{background:var(--rose-soft);color:var(--rose-dark);border:none;border-radius:12px;padding:12px;width:100%;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;margin-bottom:20px}
+.ob-footer{padding:16px 34px 34px}
+.ob-next{width:100%;background:var(--rose);color:white;border:none;border-radius:14px;padding:16px;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:600;cursor:pointer}
+.ob-skip{width:100%;background:none;border:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;padding:10px;margin-top:4px}
+
+/* success landing into app */
+.enter-app{position:absolute;inset:0;background:linear-gradient(160deg,#1E2640 0%,#14110f 100%);z-index:300;display:none;flex-direction:column;align-items:center;justify-content:center;padding:40px;text-align:center}
+.enter-app.active{display:flex;animation:fade .5s ease}
+.enter-app .ea-heart{width:80px;height:80px;background:var(--rose-light);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:24px;animation:pop .6s ease}
+.enter-app .ea-heart svg{width:42px;height:42px;fill:var(--rose)}
+.enter-app h2{font-family:'Fraunces',serif;font-size:30px;font-weight:400;color:white;line-height:1.2;margin-bottom:12px}
+.enter-app h2 em{font-style:italic;color:var(--rose)}
+.enter-app p{font-size:15px;color:rgba(255,255,255,.6);margin-bottom:32px}
+.enter-app button{background:var(--rose);color:white;border:none;border-radius:100px;padding:15px 40px;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:600;cursor:pointer}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<!-- PHONE 1: Welcome + Email flow -->
+<div class="phone">
+  <span class="label">Voordeur van de app</span>
+  <div class="notch"></div>
+  <div class="statusbar" style="color:#fff"><span>9:41</span><span class="icons">📶 📡 🔋</span></div>
+
+  <!-- WELCOME -->
+  <div class="screen active" id="welcome">
+    <div class="w-content">
+      <div class="w-logo">
+        <svg viewBox="0 0 240 52" fill="none">
+          <circle cx="26" cy="26" r="22" stroke="#F2567A" stroke-width="2.8"/>
+          <path d="M26 38C26 38 15 30.5 15 21.5C15 17.9 17.9 15 21.5 15C23.4 15 25.1 15.8 26 17.1C26.9 15.8 28.6 15 30.5 15C34.1 15 37 17.9 37 21.5C37 30.5 26 38 26 38Z" fill="#F2567A"/>
+          <text x="60" y="34" font-family="Fraunces,serif" font-size="26" font-weight="600" fill="#FFFFFF">MamaBuddy</text>
+        </svg>
+      </div>
+      <div class="w-hero">
+        <h1>Jouw persoonlijke<br>Buddy als <em>mama.</em></h1>
+        <p>Voor als het moederschap even te veel is. 24/7, in het Nederlands, alleen voor jou.</p>
+      </div>
+      <div class="w-teaser">
+        <div class="teaser-bubble">
+          <div class="teaser-av"><svg viewBox="0 0 20 18"><path d="M10 16.5S1 11 1 5a4 4 0 0 1 8-1 1 1 0 0 0 2 0 4 4 0 0 1 8 1c0 6-9 11.5-9 11.5z"/></svg></div>
+          <span>Hé 👋 Fijn dat je er bent. Hoe voel jij je vandaag écht?</span>
+        </div>
+      </div>
+    </div>
+    <div class="w-actions">
+      <button class="w-primary" onclick="show('emailScreen')">Aan de slag →</button>
+      <button class="w-secondary" onclick="show('emailScreen')">Al een account? <u>Log in</u></button>
+      <div class="w-trust">
+        <svg viewBox="0 0 24 24" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        Privé & veilig · opgeslagen in Europa
+      </div>
+    </div>
+  </div>
+
+  <!-- EMAIL INPUT -->
+  <div class="screen" id="emailScreen">
+    <div class="e-top"><button class="e-back" onclick="show('welcome')">←</button></div>
+    <div class="e-body">
+      <div class="e-icon">
+        <svg viewBox="0 0 24 24"><path d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6zm-2 0l-8 5-8-5h16zm0 12H4V8l8 5 8-5v10z"/></svg>
+      </div>
+      <h2>Log in met je<br>e-mailadres</h2>
+      <p>Geen wachtwoord nodig. We sturen je een veilige inloglink — één tik en je bent binnen.</p>
+      <div class="e-field">
+        <label>E-mailadres</label>
+        <input type="email" id="emailInput" placeholder="jouw@email.nl" value="lisa@voorbeeld.nl">
+      </div>
+      <button class="e-submit" onclick="sendLink()">Stuur mij een inloglink →</button>
+      <p class="e-privacy">Door verder te gaan ga je akkoord met onze <a href="#">voorwaarden</a> en <a href="#">privacyverklaring</a>. Jouw gesprekken zijn privé en versleuteld.</p>
+    </div>
+  </div>
+
+  <!-- SENT -->
+  <div class="screen" id="sentScreen">
+    <div class="sent-body">
+      <div class="sent-icon">
+        <svg viewBox="0 0 24 24"><path d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6zm-2 0l-8 5-8-5h16zm0 12H4V8l8 5 8-5v10z"/></svg>
+      </div>
+      <h2>Check je inbox 💛</h2>
+      <p>We hebben een inloglink gestuurd naar</p>
+      <p class="sent-email" id="sentEmail">lisa@voorbeeld.nl</p>
+      <div class="sent-hint">
+        <strong>Geen mail?</strong> Kijk even in je spam-map, of wacht een paar seconden. De link is 15 minuten geldig.
+      </div>
+      <button class="sent-resend" onclick="show('emailScreen')">Ander e-mailadres gebruiken</button>
+      <button class="sent-demo" onclick="show2('onboarding')">▶ Demo: klik alsof je op de link tikte</button>
+    </div>
+  </div>
+</div>
+
+<!-- PHONE 2: Onboarding -->
+<div class="phone">
+  <span class="label">Eerste keer: kennismaken</span>
+  <div class="notch"></div>
+  <div class="statusbar"><span>9:42</span><span class="icons">📶 📡 🔋</span></div>
+
+  <!-- ONBOARDING -->
+  <div class="screen active" id="onboarding">
+    <div class="ob-top">
+      <div class="ob-progress"><div class="ob-progress-fill" id="obProgress"></div></div>
+    </div>
+    <div class="ob-body" id="obBody">
+      <div class="ob-step-label">Even kennismaken</div>
+      <h2>Hoe mag Buddy<br>je noemen?</h2>
+      <p>Zo voelt het gesprek persoonlijk — als een vriendin die je naam kent.</p>
+      <div class="ob-field">
+        <label>Jouw voornaam</label>
+        <input type="text" id="obName" placeholder="bijv. Lisa" value="Lisa">
+      </div>
+    </div>
+    <div class="ob-footer">
+      <button class="ob-next" onclick="obStep2()">Verder →</button>
+    </div>
+  </div>
+
+  <!-- ENTER APP -->
+  <div class="enter-app" id="enterApp">
+    <div class="ea-heart"><svg viewBox="0 0 20 18"><path d="M10 16.5S1 11 1 5a4 4 0 0 1 8-1 1 1 0 0 0 2 0 4 4 0 0 1 8 1c0 6-9 11.5-9 11.5z"/></svg></div>
+    <h2>Welkom, Lisa 💛<br>Buddy staat <em>voor je klaar.</em></h2>
+    <p>Vanaf nu ben je nooit meer alleen.</p>
+    <button onclick="alert('→ Hier opent de app (Home scherm)')">Open MamaBuddy →</button>
+  </div>
+</div>
+
+<script>
+function show(id){
+  document.querySelectorAll('.phone:first-child .screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function show2(id){
+  // jump onboarding into view on phone 2 — already active, just reset
+  document.getElementById('obProgress').style.width='50%';
+  document.getElementById('onboarding').classList.add('active');
+  document.getElementById('enterApp').classList.remove('active');
+  document.getElementById('obBody').innerHTML=obStep1HTML;
+}
+function sendLink(){
+  const email=document.getElementById('emailInput').value.trim();
+  if(!email)return;
+  document.getElementById('sentEmail').textContent=email;
+  show('sentScreen');
+}
+
+const obStep1HTML=`
+  <div class="ob-step-label">Even kennismaken</div>
+  <h2>Hoe mag Buddy<br>je noemen?</h2>
+  <p>Zo voelt het gesprek persoonlijk — als een vriendin die je naam kent.</p>
+  <div class="ob-field">
+    <label>Jouw voornaam</label>
+    <input type="text" id="obName" placeholder="bijv. Lisa" value="Lisa">
+  </div>`;
+
+function obStep2(){
+  document.getElementById('obProgress').style.width='100%';
+  document.getElementById('obBody').innerHTML=`
+    <div class="ob-step-label">Vertel Buddy over je gezin</div>
+    <h2>Wie zijn jouw<br>kleintjes?</h2>
+    <p>Zo kan Buddy meedenken over hun leeftijd. Je kunt dit altijd later aanpassen.</p>
+    <div class="child-row">
+      <input type="text" placeholder="Naam kind" value="Noa">
+      <input type="text" placeholder="Leeftijd" value="2">
+    </div>
+    <div class="child-row">
+      <input type="text" placeholder="Naam kind" value="Sem">
+      <input type="text" placeholder="Leeftijd" value="5">
+    </div>
+    <button class="ob-add-child">+ Nog een kindje toevoegen</button>`;
+  document.querySelector('#onboarding .ob-footer').innerHTML=`
+    <button class="ob-next" onclick="finishOb()">Klaar, breng me naar Buddy →</button>
+    <button class="ob-skip" onclick="finishOb()">Sla over</button>`;
+}
+function finishOb(){
+  document.getElementById('enterApp').classList.add('active');
+}
+</script>
+</body>
+</html>

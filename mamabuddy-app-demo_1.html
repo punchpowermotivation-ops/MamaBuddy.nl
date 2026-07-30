@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>MamaBuddy — App</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --rose:#F2567A;--rose-light:#FDE8EE;--rose-dark:#B83055;--rose-soft:#FBEEF1;
+  --cream:#FDF8F3;--dark:#1E1A18;--navy:#1E2640;--mid:#5C4F47;--muted:#9B8F88;
+  --sand:#F5EDE4;--green:#2D8C6A;--green-light:#E2F4EC;--line:#EFE7DD;
+  --white:#FFFFFF;
+}
+body{font-family:'DM Sans',sans-serif;background:#0d0b0a;color:var(--dark);display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+
+/* PHONE FRAME */
+.phone{
+  width:390px;height:844px;
+  background:var(--cream);
+  border-radius:44px;
+  position:relative;overflow:hidden;
+  box-shadow:0 40px 100px rgba(0,0,0,.5),0 0 0 11px #16110f,0 0 0 13px #2a2320;
+}
+.notch{
+  position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:150px;height:30px;background:#16110f;
+  border-radius:0 0 20px 20px;z-index:200;
+}
+.statusbar{
+  position:absolute;top:0;left:0;right:0;height:48px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 28px 0;font-size:14px;font-weight:600;color:var(--dark);z-index:150;
+}
+.statusbar .icons{display:flex;gap:6px;align-items:center;font-size:12px}
+
+/* SCREEN CONTAINER */
+.screen{
+  position:absolute;inset:0;
+  padding-top:48px;
+  display:none;flex-direction:column;
+  animation:fadeScreen .35s ease;
+}
+.screen.active{display:flex}
+@keyframes fadeScreen{from{opacity:0;transform:translateX(8px)}to{opacity:1;transform:translateX(0)}}
+
+/* content scroll area */
+.content{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+.content::-webkit-scrollbar{width:0}
+
+/* ═══ LOGO ═══ */
+.logo-svg{height:26px;width:auto}
+.logo-mark{width:30px;height:30px}
+
+/* ═══ BOTTOM NAV ═══ */
+.tabbar{
+  height:82px;background:var(--white);
+  border-top:1px solid var(--line);
+  display:flex;align-items:flex-start;justify-content:space-around;
+  padding:10px 8px 0;z-index:100;
+  flex-shrink:0;
+}
+.tab{
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  background:none;border:none;cursor:pointer;
+  padding:6px 14px;border-radius:14px;
+  color:var(--muted);transition:color .2s;flex:1;
+}
+.tab svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.8}
+.tab.active{color:var(--rose)}
+.tab.active svg{fill:var(--rose-light)}
+.tab-label{font-size:10px;font-weight:500}
+
+/* ═══════════════════════════════════════════
+   SCREEN: HOME / DASHBOARD
+═══════════════════════════════════════════ */
+.home-header{padding:8px 24px 16px;display:flex;align-items:center;justify-content:space-between}
+.greeting-small{font-size:13px;color:var(--muted)}
+.greeting-big{font-family:'Fraunces',serif;font-size:26px;font-weight:400;color:var(--dark);margin-top:2px}
+.avatar-btn{width:44px;height:44px;border-radius:50%;background:var(--rose-light);border:none;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:17px;color:var(--rose-dark);font-weight:600;cursor:pointer}
+
+/* daily check-in card - hero */
+.checkin-card{
+  margin:4px 20px 16px;
+  background:linear-gradient(145deg,#1E2640 0%,#2d3654 100%);
+  border-radius:26px;padding:26px 24px;
+  position:relative;overflow:hidden;cursor:pointer;
+  transition:transform .2s;
+}
+.checkin-card:active{transform:scale(.98)}
+.checkin-card::before{content:'';position:absolute;top:-40px;right:-40px;width:160px;height:160px;background:radial-gradient(circle,rgba(242,86,122,.3) 0%,transparent 70%)}
+.checkin-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.12);color:white;padding:5px 12px;border-radius:100px;font-size:11px;font-weight:500;margin-bottom:14px;position:relative}
+.checkin-badge .pulse{width:6px;height:6px;background:var(--rose);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.checkin-card h2{font-family:'Fraunces',serif;font-size:23px;font-weight:400;color:white;line-height:1.25;margin-bottom:8px;position:relative}
+.checkin-card p{font-size:14px;color:rgba(255,255,255,.6);line-height:1.5;margin-bottom:18px;position:relative}
+.checkin-start{display:inline-flex;align-items:center;gap:8px;background:var(--rose);color:white;padding:11px 20px;border-radius:100px;font-size:14px;font-weight:500;position:relative}
+
+/* section title */
+.section-head{padding:8px 24px 12px;display:flex;align-items:center;justify-content:space-between}
+.section-head h3{font-family:'Fraunces',serif;font-size:18px;font-weight:500;color:var(--dark)}
+.section-head a{font-size:13px;color:var(--rose);text-decoration:none;font-weight:500}
+
+/* quick actions row */
+.quick-row{display:flex;gap:12px;padding:0 20px 20px}
+.quick-card{
+  flex:1;background:var(--white);border:1px solid var(--line);
+  border-radius:20px;padding:18px 16px;cursor:pointer;transition:transform .2s,box-shadow .2s;
+}
+.quick-card:active{transform:scale(.97)}
+.quick-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:12px}
+.qi-rose{background:var(--rose-light)}
+.qi-green{background:var(--green-light)}
+.quick-card h4{font-size:14px;font-weight:600;color:var(--dark);margin-bottom:3px}
+.quick-card p{font-size:12px;color:var(--muted);line-height:1.4}
+
+/* insight card */
+.insight-card{
+  margin:0 20px 16px;background:var(--rose-soft);
+  border-radius:20px;padding:18px 20px;display:flex;gap:14px;align-items:flex-start;
+}
+.insight-icon{width:36px;height:36px;background:var(--white);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.insight-icon svg{width:18px;height:18px;fill:var(--rose)}
+.insight-card p{font-size:13px;color:var(--mid);line-height:1.5}
+.insight-card strong{color:var(--dark);font-weight:600}
+
+/* streak card */
+.streak{margin:0 20px 24px;background:var(--white);border:1px solid var(--line);border-radius:20px;padding:18px 20px}
+.streak-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.streak-top h4{font-size:14px;font-weight:600;color:var(--dark)}
+.streak-flame{font-size:15px;color:var(--rose);font-weight:600}
+.streak-days{display:flex;justify-content:space-between;gap:6px}
+.day{flex:1;text-align:center}
+.day-dot{width:100%;aspect-ratio:1;max-width:34px;margin:0 auto 6px;border-radius:50%;background:var(--sand);display:flex;align-items:center;justify-content:center;font-size:13px}
+.day-dot.done{background:var(--rose);color:white}
+.day-dot.today{background:var(--rose-light);border:2px solid var(--rose)}
+.day-label{font-size:10px;color:var(--muted)}
+
+/* ═══════════════════════════════════════════
+   SCREEN: BUDDY CHAT
+═══════════════════════════════════════════ */
+.chat-header{
+  padding:8px 20px 14px;display:flex;align-items:center;gap:12px;
+  border-bottom:1px solid var(--line);background:var(--white);
+}
+.chat-avatar{width:44px;height:44px;background:var(--rose-light);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.chat-avatar svg{width:24px;height:24px;fill:var(--rose)}
+.chat-title{flex:1}
+.chat-title h3{font-size:16px;font-weight:600;color:var(--dark)}
+.chat-title .status{font-size:12px;color:var(--green);display:flex;align-items:center;gap:5px}
+.status-dot{width:6px;height:6px;background:var(--green);border-radius:50%}
+.chat-menu{background:none;border:none;color:var(--muted);cursor:pointer;padding:6px}
+.chat-menu svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2}
+
+.chat-scroll{flex:1;overflow-y:auto;padding:20px 18px 8px;display:flex;flex-direction:column;gap:12px;background:var(--cream)}
+.chat-scroll::-webkit-scrollbar{width:0}
+
+.chat-date{text-align:center;font-size:11px;color:var(--muted);margin:4px 0}
+
+.msg{max-width:82%;display:flex;flex-direction:column;animation:msgIn .3s ease}
+@keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.msg.buddy{align-self:flex-start}
+.msg.user{align-self:flex-end}
+.msg-bubble{padding:13px 16px;font-size:14.5px;line-height:1.5;border-radius:20px}
+.msg.buddy .msg-bubble{background:var(--white);color:var(--dark);border-bottom-left-radius:5px;box-shadow:0 2px 10px rgba(30,26,24,.04)}
+.msg.user .msg-bubble{background:var(--rose);color:white;border-bottom-right-radius:5px}
+.msg-time{font-size:10px;color:var(--muted);margin-top:4px;padding:0 6px}
+.msg.user .msg-time{text-align:right}
+
+/* memory chip - shows Buddy remembers */
+.memory-chip{
+  align-self:center;display:inline-flex;align-items:center;gap:7px;
+  background:var(--rose-soft);color:var(--rose-dark);
+  padding:7px 14px;border-radius:100px;font-size:11.5px;font-weight:500;
+  margin:2px 0;
+}
+.memory-chip svg{width:13px;height:13px;fill:var(--rose)}
+
+.typing-bubble{align-self:flex-start;background:var(--white);padding:14px 18px;border-radius:20px;border-bottom-left-radius:5px;box-shadow:0 2px 10px rgba(30,26,24,.04)}
+.typing-dots{display:flex;gap:4px}
+.typing-dots span{width:7px;height:7px;background:var(--muted);border-radius:50%;animation:bounce 1.4s infinite}
+.typing-dots span:nth-child(2){animation-delay:.2s}
+.typing-dots span:nth-child(3){animation-delay:.4s}
+@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+
+/* suggestion chips */
+.chat-suggestions{display:flex;gap:8px;padding:10px 18px;overflow-x:auto;background:var(--cream)}
+.chat-suggestions::-webkit-scrollbar{height:0}
+.sug-chip{white-space:nowrap;background:var(--white);border:1px solid var(--line);color:var(--mid);padding:9px 15px;border-radius:100px;font-size:13px;cursor:pointer;flex-shrink:0;transition:background .2s}
+.sug-chip:active{background:var(--rose-light)}
+
+/* chat input */
+.chat-input-bar{padding:12px 16px 18px;background:var(--white);border-top:1px solid var(--line);display:flex;align-items:center;gap:10px}
+.chat-input{flex:1;background:var(--sand);border:none;border-radius:100px;padding:13px 18px;font-family:'DM Sans',sans-serif;font-size:14.5px;color:var(--dark);outline:none}
+.chat-input::placeholder{color:var(--muted)}
+.chat-send{width:44px;height:44px;background:var(--rose);border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:transform .15s}
+.chat-send:active{transform:scale(.9)}
+.chat-send svg{width:20px;height:20px;fill:white}
+
+/* free limit banner */
+.limit-banner{margin:0 18px 8px;background:var(--navy);border-radius:14px;padding:12px 16px;display:flex;align-items:center;gap:12px}
+.limit-banner p{flex:1;font-size:12px;color:rgba(255,255,255,.8);line-height:1.4}
+.limit-banner strong{color:white}
+.limit-upgrade{background:var(--rose);color:white;border:none;padding:8px 14px;border-radius:100px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:'DM Sans',sans-serif}
+
+/* ═══════════════════════════════════════════
+   SCREEN: MENTAL LOAD
+═══════════════════════════════════════════ */
+.load-header{padding:8px 24px 4px}
+.load-header h2{font-family:'Fraunces',serif;font-size:26px;font-weight:400;color:var(--dark)}
+.load-header p{font-size:14px;color:var(--muted);margin-top:4px;line-height:1.5}
+.load-intro{margin:16px 20px;background:var(--green-light);border-radius:18px;padding:16px 18px;display:flex;gap:12px;align-items:flex-start}
+.load-intro svg{width:20px;height:20px;fill:var(--green);flex-shrink:0;margin-top:1px}
+.load-intro p{font-size:13px;color:var(--mid);line-height:1.5}
+
+.load-add{margin:0 20px 20px;display:flex;gap:10px}
+.load-add input{flex:1;background:var(--white);border:1.5px solid var(--line);border-radius:14px;padding:14px 16px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--dark);outline:none}
+.load-add input:focus{border-color:var(--rose)}
+.load-add button{width:50px;background:var(--rose);border:none;border-radius:14px;color:white;font-size:24px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+
+.load-list{padding:0 20px 20px}
+.load-group-title{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin:16px 0 10px}
+.load-item{
+  background:var(--white);border:1px solid var(--line);border-radius:16px;
+  padding:15px 16px;margin-bottom:10px;display:flex;align-items:center;gap:14px;cursor:pointer;
+  transition:opacity .3s;
+}
+.load-check{width:24px;height:24px;border-radius:50%;border:2px solid var(--line);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.load-check.done{background:var(--green);border-color:var(--green)}
+.load-check.done svg{width:13px;height:13px;stroke:white;fill:none;stroke-width:3}
+.load-item.done{opacity:.5}
+.load-item.done .load-text{text-decoration:line-through}
+.load-text{flex:1;font-size:14.5px;color:var(--dark)}
+.load-cat{font-size:11px;color:var(--muted);background:var(--sand);padding:3px 9px;border-radius:100px}
+
+/* ═══════════════════════════════════════════
+   SCREEN: CHECK-IN FLOW
+═══════════════════════════════════════════ */
+.checkin-screen{background:linear-gradient(160deg,#1E2640 0%,#14110f 100%);position:absolute;inset:0;z-index:300;display:none;flex-direction:column;padding:48px 0 0}
+.checkin-screen.active{display:flex;animation:fadeScreen .4s ease}
+.ci-top{padding:16px 24px;display:flex;align-items:center;justify-content:space-between}
+.ci-close{background:rgba(255,255,255,.1);border:none;width:38px;height:38px;border-radius:50%;color:white;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.ci-progress{flex:1;height:4px;background:rgba(255,255,255,.15);border-radius:100px;margin:0 16px;overflow:hidden}
+.ci-progress-fill{height:100%;background:var(--rose);border-radius:100px;width:33%;transition:width .4s}
+.ci-body{flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 32px 40px}
+.ci-question{font-family:'Fraunces',serif;font-size:30px;font-weight:400;color:white;line-height:1.25;margin-bottom:8px;text-align:center}
+.ci-sub{font-size:15px;color:rgba(255,255,255,.55);text-align:center;margin-bottom:40px}
+.ci-moods{display:flex;flex-direction:column;gap:12px}
+.mood-btn{background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.12);border-radius:18px;padding:18px 20px;display:flex;align-items:center;gap:16px;cursor:pointer;transition:all .2s}
+.mood-btn:active{background:rgba(255,255,255,.15);transform:scale(.98)}
+.mood-emoji{font-size:28px}
+.mood-text{font-size:16px;color:white;font-weight:500}
+.ci-response{opacity:0;animation:ciResponse .6s .2s ease forwards;text-align:center}
+@keyframes ciResponse{to{opacity:1}}
+.ci-buddy-av{width:64px;height:64px;background:var(--rose-light);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px}
+.ci-buddy-av svg{width:34px;height:34px;fill:var(--rose)}
+.ci-response-text{font-family:'Fraunces',serif;font-size:22px;font-weight:400;color:white;line-height:1.4;margin-bottom:32px}
+.ci-response-text em{font-style:italic;color:var(--rose)}
+.ci-done-btn{background:var(--rose);color:white;border:none;border-radius:100px;padding:16px 36px;font-size:16px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif}
+
+/* ═══════════════════════════════════════════
+   SCREEN: PROFILE / MEMORY
+═══════════════════════════════════════════ */
+.profile-header{padding:20px 24px;text-align:center}
+.profile-avatar{width:80px;height:80px;border-radius:50%;background:var(--rose-light);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:32px;color:var(--rose-dark);font-weight:600;margin:0 auto 14px}
+.profile-header h2{font-family:'Fraunces',serif;font-size:24px;font-weight:500;color:var(--dark)}
+.profile-badge{display:inline-flex;align-items:center;gap:6px;background:var(--rose-light);color:var(--rose-dark);padding:6px 14px;border-radius:100px;font-size:12px;font-weight:600;margin-top:8px}
+
+.mem-section{margin:8px 20px 16px;background:var(--white);border:1px solid var(--line);border-radius:20px;overflow:hidden}
+.mem-header{padding:18px 20px 14px;border-bottom:1px solid var(--line)}
+.mem-header h3{font-size:15px;font-weight:600;color:var(--dark);display:flex;align-items:center;gap:8px}
+.mem-header h3 svg{width:18px;height:18px;fill:var(--rose)}
+.mem-header p{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.4}
+.mem-item{padding:14px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+.mem-item:last-child{border-bottom:none}
+.mem-item-text{font-size:14px;color:var(--dark)}
+.mem-item-label{font-size:11px;color:var(--muted);margin-bottom:2px}
+.mem-edit{background:none;border:none;color:var(--rose);font-size:13px;font-weight:500;cursor:pointer}
+
+.settings-list{margin:0 20px 24px;background:var(--white);border:1px solid var(--line);border-radius:20px;overflow:hidden}
+.settings-item{padding:16px 20px;display:flex;align-items:center;gap:14px;border-bottom:1px solid var(--line);cursor:pointer}
+.settings-item:last-child{border-bottom:none}
+.settings-item svg{width:20px;height:20px;stroke:var(--mid);fill:none;stroke-width:1.8}
+.settings-item span{flex:1;font-size:14.5px;color:var(--dark)}
+.settings-item .arrow{width:16px;height:16px;stroke:var(--muted)}
+
+/* premium card in profile */
+.premium-card{margin:8px 20px 20px;background:linear-gradient(145deg,var(--rose) 0%,var(--rose-dark) 100%);border-radius:22px;padding:22px;position:relative;overflow:hidden}
+.premium-card::before{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;background:rgba(255,255,255,.12);border-radius:50%}
+.premium-card h3{font-family:'Fraunces',serif;font-size:20px;font-weight:400;color:white;margin-bottom:6px;position:relative}
+.premium-card p{font-size:13px;color:rgba(255,255,255,.8);line-height:1.5;margin-bottom:16px;position:relative}
+.premium-btn{background:white;color:var(--rose-dark);border:none;border-radius:100px;padding:12px 24px;font-size:14px;font-weight:600;cursor:pointer;position:relative;font-family:'DM Sans',sans-serif}
+
+/* ═══════════════════════════════════════════
+   PAYWALL MODAL (Mollie)
+═══════════════════════════════════════════ */
+.modal-overlay{position:absolute;inset:0;background:rgba(20,17,15,.6);backdrop-filter:blur(4px);z-index:400;display:none;align-items:flex-end;animation:fadeScreen .3s ease}
+.modal-overlay.active{display:flex}
+.paywall{background:var(--cream);width:100%;border-radius:32px 32px 0 0;padding:12px 24px 34px;animation:slideUp .4s cubic-bezier(.2,.8,.2,1)}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.paywall-handle{width:40px;height:5px;background:var(--line);border-radius:100px;margin:0 auto 20px}
+.paywall-icon{width:60px;height:60px;background:var(--rose-light);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+.paywall-icon svg{width:32px;height:32px;fill:var(--rose)}
+.paywall h2{font-family:'Fraunces',serif;font-size:26px;font-weight:400;color:var(--dark);text-align:center;line-height:1.2;margin-bottom:8px}
+.paywall > p{font-size:14px;color:var(--mid);text-align:center;line-height:1.5;margin-bottom:24px}
+.paywall-features{margin-bottom:24px}
+.pw-feat{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
+.pw-feat:last-child{border-bottom:none}
+.pw-feat-check{width:24px;height:24px;background:var(--green-light);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.pw-feat-check svg{width:13px;height:13px;stroke:var(--green);fill:none;stroke-width:3}
+.pw-feat span{font-size:14.5px;color:var(--dark)}
+.price-box{background:var(--white);border:2px solid var(--rose);border-radius:18px;padding:18px 20px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between}
+.price-info .price-label{font-size:13px;color:var(--muted)}
+.price-info .price-amount{font-family:'Fraunces',serif;font-size:28px;font-weight:500;color:var(--dark)}
+.price-info .price-amount span{font-size:15px;color:var(--muted);font-weight:400}
+.price-badge{background:var(--rose-light);color:var(--rose-dark);padding:6px 12px;border-radius:100px;font-size:11px;font-weight:600}
+.pay-btn{width:100%;background:var(--rose);color:white;border:none;border-radius:16px;padding:17px;font-size:16px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:10px}
+.pay-btn:active{background:var(--rose-dark)}
+.mollie-note{text-align:center;font-size:11px;color:var(--muted);margin-top:14px;display:flex;align-items:center;justify-content:center;gap:6px}
+
+/* ═══ ONBOARDING / SPLASH ═══ */
+.splash{position:absolute;inset:0;background:linear-gradient(160deg,#1E2640 0%,#14110f 100%);z-index:500;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px}
+.splash.hide{animation:splashOut .6s ease forwards}
+@keyframes splashOut{to{opacity:0;visibility:hidden}}
+.splash-logo{animation:splashLogo 1s ease}
+@keyframes splashLogo{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
+.splash-tagline{color:rgba(255,255,255,.6);font-size:15px;margin-top:16px;opacity:0;animation:fadeIn 1s .5s ease forwards}
+@keyframes fadeIn{to{opacity:1}}
+
+/* toast */
+.toast{position:absolute;bottom:100px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--dark);color:white;padding:12px 20px;border-radius:100px;font-size:13px;font-weight:500;z-index:450;opacity:0;transition:all .3s;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* hint bar */
+.hint{position:fixed;top:24px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,.95);backdrop-filter:blur(8px);padding:10px 20px;border-radius:100px;font-size:13px;color:var(--dark);box-shadow:0 8px 30px rgba(0,0,0,.3);z-index:999;font-weight:500}
+</style>
+</head>
+<body>
+
+<div class="hint">👆 Klik rond — dit is een werkende demo</div>
+
+<div class="phone">
+  <div class="notch"></div>
+  <div class="statusbar">
+    <span>9:41</span>
+    <span class="icons">📶 📡 🔋</span>
+  </div>
+
+  <!-- ═══ SPLASH ═══ -->
+  <div class="splash" id="splash">
+    <div class="splash-logo">
+      <svg width="240" height="52" viewBox="0 0 240 52" fill="none">
+        <circle cx="26" cy="26" r="22" stroke="#F2567A" stroke-width="2.8"/>
+        <path d="M26 38C26 38 15 30.5 15 21.5C15 17.9 17.9 15 21.5 15C23.4 15 25.1 15.8 26 17.1C26.9 15.8 28.6 15 30.5 15C34.1 15 37 17.9 37 21.5C37 30.5 26 38 26 38Z" fill="#F2567A"/>
+        <text x="60" y="34" font-family="Fraunces,serif" font-size="26" font-weight="600" fill="#FFFFFF">MamaBuddy</text>
+      </svg>
+    </div>
+    <p class="splash-tagline">Jouw Buddy. Altijd beschikbaar. 💛</p>
+  </div>
+
+  <!-- ═══════════ HOME SCREEN ═══════════ -->
+  <div class="screen active" id="screen-home">
+    <div class="content">
+      <div class="home-header">
+        <div>
+          <div class="greeting-small">Goedemorgen 💛</div>
+          <div class="greeting-big">Hoi Lisa</div>
+        </div>
+        <button class="avatar-btn" onclick="go('profile')">L</button>
+      </div>
+
+      <!-- daily check-in hero -->
+      <div class="checkin-card" onclick="openCheckin()">
+        <div class="checkin-badge"><span class="pulse"></span>Dagelijkse check-in</div>
+        <h2>Hoe voel jij je<br>vandaag écht?</h2>
+        <p>Neem 2 minuten voor jezelf. Buddy luistert.</p>
+        <div class="checkin-start">Start check-in →</div>
+      </div>
+
+      <!-- quick actions -->
+      <div class="section-head"><h3>Vandaag</h3></div>
+      <div class="quick-row">
+        <div class="quick-card" onclick="go('chat')">
+          <div class="quick-icon qi-rose">💬</div>
+          <h4>Praat met Buddy</h4>
+          <p>Altijd beschikbaar</p>
+        </div>
+        <div class="quick-card" onclick="go('load')">
+          <div class="quick-icon qi-green">🧠</div>
+          <h4>Mijn hoofd</h4>
+          <p>3 dingen open</p>
+        </div>
+      </div>
+
+      <!-- insight from Buddy (memory) -->
+      <div class="section-head"><h3>Buddy denkt met je mee</h3></div>
+      <div class="insight-card">
+        <div class="insight-icon">
+          <svg viewBox="0 0 20 18"><path d="M10 16.5S1 11 1 5a4 4 0 0 1 8-1 1 1 0 0 0 2 0 4 4 0 0 1 8 1c0 6-9 11.5-9 11.5z"/></svg>
+        </div>
+        <p><strong>Je gaf gisteren aan moe te zijn.</strong> Vergeet niet: rust is geen luxe, het is nodig. Heb je vandaag al 10 minuten voor jezelf genomen?</p>
+      </div>
+
+      <!-- streak -->
+      <div class="streak">
+        <div class="streak-top">
+          <h4>Jouw check-in reeks</h4>
+          <span class="streak-flame">🔥 5 dagen</span>
+        </div>
+        <div class="streak-days">
+          <div class="day"><div class="day-dot done">✓</div><div class="day-label">ma</div></div>
+          <div class="day"><div class="day-dot done">✓</div><div class="day-label">di</div></div>
+          <div class="day"><div class="day-dot done">✓</div><div class="day-label">wo</div></div>
+          <div class="day"><div class="day-dot done">✓</div><div class="day-label">do</div></div>
+          <div class="day"><div class="day-dot done">✓</div><div class="day-label">vr</div></div>
+          <div class="day"><div class="day-dot today"></div><div class="day-label">za</div></div>
+          <div class="day"><div class="day-dot"></div><div class="day-label">zo</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tabbar">
+      <button class="tab active" onclick="go('home')">
+        <svg viewBox="0 0 24 24"><path d="M3 12l9-9 9 9M5 10v10a1 1 0 001 1h3v-6h6v6h3a1 1 0 001-1V10"/></svg>
+        <span class="tab-label">Home</span>
+      </button>
+      <button class="tab" onclick="go('chat')">
+        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        <span class="tab-label">Buddy</span>
+      </button>
+      <button class="tab" onclick="go('load')">
+        <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+        <span class="tab-label">Mijn hoofd</span>
+      </button>
+      <button class="tab" onclick="go('profile')">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
+        <span class="tab-label">Profiel</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══════════ CHAT SCREEN ═══════════ -->
+  <div class="screen" id="screen-chat">
+    <div class="chat-header">
+      <div class="chat-avatar">
+        <svg viewBox="0 0 20 18"><path d="M10 16.5S1 11 1 5a4 4 0 0 1 8-1 1 1 0 0 0 2 0 4 4 0 0 1 8 1c0 6-9 11.5-9 11.5z"/></svg>
+      </div>
+      <div class="chat-title">
+        <h3>Buddy</h3>
+        <div class="status"><span class="status-dot"></span>altijd beschikbaar</div>
+      </div>
+      <button class="chat-menu"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+    </div>
+
+    <div class="chat-scroll" id="chatScroll">
+      <div class="chat-date">Vandaag</div>
+
+      <div class="memory-chip">
+        <svg viewBox="0 0 20 18"><path d="M10 16.5S1 11 1 5a4 4 0 0 1 8-1 1 1 0 0 0 2 0 4 4 0 0 1 8 1c0 6-9 11.5-9 11.5z"/></svg>
+        Buddy herinnert zich jullie vorige gesprek
+      </div>
+
+      <div class="msg buddy">
+        <div class="msg-bubble">Hé Lisa 💛 Fijn dat je er weer bent. Gisteren vertelde je dat Noa slecht sliep — hoe ging de nacht?</div>
+        <div class="msg-time">09:12</div>
+      </div>
+
+      <div class="msg user">
+        <div class="msg-bubble">Iets beter, maar ik ben zelf gesloopt. En ik voel me schuldig dat ik geïrriteerd was vanochtend 😔</div>
+        <div class="msg-time">09:14</div>
+      </div>
+
+      <div class="msg buddy">
+        <div class="msg-bubble">Dat je geïrriteerd was betekent niet dat je een slechte moeder bent — het betekent dat je uitgeput bent. Dat is een signaal, geen falen. Wat zou jou vandaag een klein beetje lucht geven?</div>
+        <div class="msg-time">09:14</div>
+      </div>
+    </div>
+
+    <div class="chat-suggestions">
+      <button class="sug-chip" onclick="sendSug(this)">Ik weet het niet meer</button>
+      <button class="sug-chip" onclick="sendSug(this)">Mijn partner begrijpt me niet</button>
+      <button class="sug-chip" onclick="sendSug(this)">Ik ben zo moe</button>
+    </div>
+
+    <div class="chat-input-bar">
+      <input class="chat-input" id="chatInput" placeholder="Type je bericht…" onkeypress="if(event.key==='Enter')sendMsg()">
+      <button class="chat-send" onclick="sendMsg()">
+        <svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
+      </button>
+    </div>
+
+    <div class="tabbar">
+      <button class="tab" onclick="go('home')"><svg viewBox="0 0 24 24"><path d="M3 12l9-9 9 9M5 10v10a1 1 0 001 1h3v-6h6v6h3a1 1 0 001-1V10"/></svg><span class="tab-label">Home</span></button>
+      <button class="tab active" onclick="go('chat')"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg><span class="tab-label">Buddy</span></button>
+      <button class="tab" onclick="go('load')"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg><span class="tab-label">Mijn hoofd</span></button>
+      <button class="tab" onclick="go('profile')"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg><span class="tab-label">Profiel</span></button>
+    </div>
+  </div>
+
+  <!-- ═══════════ MENTAL LOAD SCREEN ═══════════ -->
+  <div class="screen" id="screen-load">
+    <div class="content">
+      <div class="load-header">
+        <h2>Mijn hoofd</h2>
+        <p>Leg je hoofd leeg. Buddy onthoudt het voor je.</p>
+      </div>
+
+      <div class="load-intro">
+        <svg viewBox="0 0 20 18"><path d="M10 16.5S1 11 1 5a4 4 0 0 1 8-1 1 1 0 0 0 2 0 4 4 0 0 1 8 1c0 6-9 11.5-9 11.5z"/></svg>
+        <p>Alle lijstjes die in je hoofd rondspoken? Zet ze hier neer. Dat geeft rust.</p>
+      </div>
+
+      <div class="load-add">
+        <input id="loadInput" placeholder="Wat zit er in je hoofd?" onkeypress="if(event.key==='Enter')addLoad()">
+        <button onclick="addLoad()">+</button>
+      </div>
+
+      <div class="load-list" id="loadList">
+        <div class="load-group-title">Deze week</div>
+        <div class="load-item" onclick="toggleLoad(this)">
+          <div class="load-check"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></div>
+          <span class="load-text">Gymschoenen Noa checken (te klein?)</span>
+          <span class="load-cat">Kind</span>
+        </div>
+        <div class="load-item" onclick="toggleLoad(this)">
+          <div class="load-check"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></div>
+          <span class="load-text">Tandarts bellen voor controle</span>
+          <span class="load-cat">Gezin</span>
+        </div>
+        <div class="load-item" onclick="toggleLoad(this)">
+          <div class="load-check"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></div>
+          <span class="load-text">Cadeau verjaardag schoonmoeder</span>
+          <span class="load-cat">Sociaal</span>
+        </div>
+        <div class="load-group-title">Afgerond ✨</div>
+        <div class="load-item done" onclick="toggleLoad(this)">
+          <div class="load-check done"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></div>
+          <span class="load-text">Wasmiddel bestellen</span>
+          <span class="load-cat">Huis</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tabbar">
+      <button class="tab" onclick="go('home')"><svg viewBox="0 0 24 24"><path d="M3 12l9-9 9 9M5 10v10a1 1 0 001 1h3v-6h6v6h3a1 1 0 001-1V10"/></svg><span class="tab-label">Home</span></button>
+      <button class="tab" onclick="go('chat')"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg><span class="tab-label">Buddy</span></button>
+      <button class="tab active" onclick="go('load')"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg><span class="tab-label">Mijn hoofd</span></button>
+      <button class="tab" onclick="go('profile')"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg><span class="tab-label">Profiel</span></button>
+    </div>
+  </div>
+
+  <!-- ═══════════ PROFILE SCREEN ═══════════ -->
+  <div class="screen" id="screen-profile">
+    <div class="content">
+      <div class="profile-header">
+        <div class="profile-avatar">L</div>
+        <h2>Lisa</h2>
+        <div class="profile-badge">💛 Founding Member</div>
+      </div>
+
+      <!-- what Buddy remembers -->
+      <div class="mem-section">
+        <div class="mem-header">
+          <h3><svg viewBox="0 0 20 18"><path d="M10 16.5S1 11 1 5a4 4 0 0 1 8-1 1 1 0 0 0 2 0 4 4 0 0 1 8 1c0 6-9 11.5-9 11.5z"/></svg> Wat Buddy over jou weet</h3>
+          <p>Jij bepaalt wat Buddy onthoudt. Pas aan of wis wanneer je wilt.</p>
+        </div>
+        <div class="mem-item">
+          <div>
+            <div class="mem-item-label">Kinderen</div>
+            <div class="mem-item-text">Noa (2) en Sem (5)</div>
+          </div>
+          <button class="mem-edit" onclick="toast('Bewerken')">Bewerk</button>
+        </div>
+        <div class="mem-item">
+          <div>
+            <div class="mem-item-label">Wat speelt er</div>
+            <div class="mem-item-text">Slaapproblemen · werkdruk</div>
+          </div>
+          <button class="mem-edit" onclick="toast('Bewerken')">Bewerk</button>
+        </div>
+        <div class="mem-item">
+          <div>
+            <div class="mem-item-label">Buddy merkte op</div>
+            <div class="mem-item-text">Voelt zich vaak schuldig</div>
+          </div>
+          <button class="mem-edit" onclick="toast('Verwijderd')">Wis</button>
+        </div>
+      </div>
+
+      <!-- premium upsell -->
+      <div class="premium-card">
+        <h3>Ontgrendel Buddy Premium</h3>
+        <p>Onbeperkt praten, Buddy's volledige geheugen en je wekelijkse overzicht.</p>
+        <button class="premium-btn" onclick="openPaywall()">Bekijk Premium →</button>
+      </div>
+
+      <div class="settings-list">
+        <div class="settings-item" onclick="toast('Meldingen')">
+          <svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 01-3.4 0"/></svg>
+          <span>Meldingen</span>
+          <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+        <div class="settings-item" onclick="toast('Privacy & data')">
+          <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+          <span>Privacy & data</span>
+          <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+        <div class="settings-item" onclick="toast('Hulp nodig?')">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01"/></svg>
+          <span>Hulp & contact</span>
+          <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="tabbar">
+      <button class="tab" onclick="go('home')"><svg viewBox="0 0 24 24"><path d="M3 12l9-9 9 9M5 10v10a1 1 0 001 1h3v-6h6v6h3a1 1 0 001-1V10"/></svg><span class="tab-label">Home</span></button>
+      <button class="tab" onclick="go('chat')"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg><span class="tab-label">Buddy</span></button>
+      <button class="tab" onclick="go('load')"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg><span class="tab-label">Mijn hoofd</span></button>
+      <button class="tab active" onclick="go('profile')"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg><span class="tab-label">Profiel</span></button>
+    </div>
+  </div>
+
+  <!-- ═══════════ CHECK-IN FLOW ═══════════ -->
+  <div class="checkin-screen" id="checkinScreen">
+    <div class="ci-top">
+      <button class="ci-close" onclick="closeCheckin()">✕</button>
+      <div class="ci-progress"><div class="ci-progress-fill" id="ciProgress"></div></div>
+      <div style="width:38px"></div>
+    </div>
+    <div class="ci-body" id="ciBody">
+      <!-- step 1 -->
+      <div id="ciStep1">
+        <div class="ci-question">Hoe voel je je<br>op dit moment?</div>
+        <div class="ci-sub">Er is geen goed of fout antwoord.</div>
+        <div class="ci-moods">
+          <button class="mood-btn" onclick="ciStep2('uitgeput')"><span class="mood-emoji">😮‍💨</span><span class="mood-text">Uitgeput</span></button>
+          <button class="mood-btn" onclick="ciStep2('overprikkeld')"><span class="mood-emoji">🌀</span><span class="mood-text">Overprikkeld</span></button>
+          <button class="mood-btn" onclick="ciStep2('oké')"><span class="mood-emoji">🙂</span><span class="mood-text">Wel oké</span></button>
+          <button class="mood-btn" onclick="ciStep2('goed')"><span class="mood-emoji">✨</span><span class="mood-text">Eigenlijk best goed</span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ PAYWALL (MOLLIE) ═══════════ -->
+  <div class="modal-overlay" id="paywall">
+    <div class="paywall">
+      <div class="paywall-handle"></div>
+      <div class="paywall-icon">
+        <svg viewBox="0 0 20 18"><path d="M10 16.5S1 11 1 5a4 4 0 0 1 8-1 1 1 0 0 0 2 0 4 4 0 0 1 8 1c0 6-9 11.5-9 11.5z"/></svg>
+      </div>
+      <h2>Buddy Premium</h2>
+      <p>Voor als je meer dan een paar berichten per dag nodig hebt.</p>
+
+      <div class="paywall-features">
+        <div class="pw-feat"><div class="pw-feat-check"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></div><span>Onbeperkt praten met Buddy</span></div>
+        <div class="pw-feat"><div class="pw-feat-check"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></div><span>Buddy's volledige geheugen & inzichten</span></div>
+        <div class="pw-feat"><div class="pw-feat-check"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></div><span>Wekelijks persoonlijk overzicht</span></div>
+        <div class="pw-feat"><div class="pw-feat-check"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></div><span>Toeslagen & regelingen checker</span></div>
+      </div>
+
+      <div class="price-box">
+        <div class="price-info">
+          <div class="price-label">Maandelijks · altijd opzegbaar</div>
+          <div class="price-amount">€7,99<span>/maand</span></div>
+        </div>
+        <div class="price-badge">Founding: €3,99</div>
+      </div>
+
+      <button class="pay-btn" onclick="payMollie()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20" stroke="#F2567A" stroke-width="1.5"/></svg>
+        Start met Mollie
+      </button>
+      <div class="mollie-note">🔒 Veilig betalen via Mollie · iDEAL, creditcard & meer</div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+// splash
+setTimeout(()=>{document.getElementById('splash').classList.add('hide')},1800);
+
+// navigation
+function go(screen){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+screen).classList.add('active');
+}
+
+// toast
+let toastTimer;
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),1800);
+}
+
+// ═══ CHAT ═══
+const buddyReplies=[
+  "Dat klinkt zwaar. Je hoeft het niet alleen te dragen — ik ben er. Vertel me wat er speelt. 💛",
+  "Ik hoor je. En het is oké om je zo te voelen. Wat zou op dit moment het meeste helpen?",
+  "Je doet het beter dan je denkt. Even ademhalen — je bent een goede moeder, ook op de moeilijke dagen.",
+];
+let replyIdx=0;
+function addUserMsg(text){
+  const scroll=document.getElementById('chatScroll');
+  const now=new Date();
+  const time=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+  scroll.insertAdjacentHTML('beforeend',`<div class="msg user"><div class="msg-bubble">${text}</div><div class="msg-time">${time}</div></div>`);
+  scroll.scrollTop=scroll.scrollHeight;
+  // typing
+  setTimeout(()=>{
+    scroll.insertAdjacentHTML('beforeend',`<div class="typing-bubble" id="typing"><div class="typing-dots"><span></span><span></span><span></span></div></div>`);
+    scroll.scrollTop=scroll.scrollHeight;
+  },500);
+  setTimeout(()=>{
+    const t=document.getElementById('typing');if(t)t.remove();
+    scroll.insertAdjacentHTML('beforeend',`<div class="msg buddy"><div class="msg-bubble">${buddyReplies[replyIdx%buddyReplies.length]}</div><div class="msg-time">${time}</div></div>`);
+    replyIdx++;
+    scroll.scrollTop=scroll.scrollHeight;
+    // after 3 messages show paywall
+    if(replyIdx===3){setTimeout(showLimit,800)}
+  },1900);
+}
+function sendMsg(){
+  const inp=document.getElementById('chatInput');
+  if(!inp.value.trim())return;
+  addUserMsg(inp.value.trim());
+  inp.value='';
+}
+function sendSug(btn){addUserMsg(btn.textContent)}
+function showLimit(){
+  const scroll=document.getElementById('chatScroll');
+  scroll.insertAdjacentHTML('beforeend',`<div class="limit-banner" id="limitBanner"><p><strong>Je hebt je 3 gratis berichten gebruikt.</strong> Praat onbeperkt met Premium.</p><button class="limit-upgrade" onclick="openPaywall()">Upgrade</button></div>`);
+  scroll.scrollTop=scroll.scrollHeight;
+}
+
+// ═══ MENTAL LOAD ═══
+function addLoad(){
+  const inp=document.getElementById('loadInput');
+  if(!inp.value.trim())return;
+  const list=document.getElementById('loadList');
+  const item=document.createElement('div');
+  item.className='load-item';
+  item.onclick=function(){toggleLoad(this)};
+  item.innerHTML=`<div class="load-check"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></div><span class="load-text">${inp.value.trim()}</span><span class="load-cat">Nieuw</span>`;
+  list.insertBefore(item,list.children[1]);
+  inp.value='';
+  toast('Uit je hoofd, in de app 💛');
+}
+function toggleLoad(el){
+  el.classList.toggle('done');
+  el.querySelector('.load-check').classList.toggle('done');
+  if(el.classList.contains('done'))toast('Lekker afgevinkt ✨');
+}
+
+// ═══ CHECK-IN ═══
+function openCheckin(){document.getElementById('checkinScreen').classList.add('active')}
+function closeCheckin(){
+  document.getElementById('checkinScreen').classList.remove('active');
+  resetCheckin();
+}
+function resetCheckin(){
+  document.getElementById('ciProgress').style.width='33%';
+  document.getElementById('ciBody').innerHTML=document.getElementById('ciStep1Template').innerHTML;
+}
+const moodResponses={
+  'uitgeput':"Uitgeput zijn is geen zwakte, Lisa. Het is je lichaam dat om rust vraagt. Je doet ontzettend veel — <em>vergeet jezelf niet.</em>",
+  'overprikkeld':"Alle prikkels van een dag met kinderen zijn echt veel. Gun jezelf straks 10 minuten <em>stilte</em>, alleen voor jou.",
+  'oké':"Fijn dat het wel oké gaat. Onthoud dit gevoel — <em>ook de rustige dagen tellen.</em>",
+  'goed':"Wat heerlijk om te horen! 💛 Geniet ervan, je <em>verdient</em> deze goede momenten.",
+};
+function ciStep2(mood){
+  document.getElementById('ciProgress').style.width='100%';
+  document.getElementById('ciBody').innerHTML=`
+    <div class="ci-response">
+      <div class="ci-buddy-av"><svg viewBox="0 0 20 18"><path d="M10 16.5S1 11 1 5a4 4 0 0 1 8-1 1 1 0 0 0 2 0 4 4 0 0 1 8 1c0 6-9 11.5-9 11.5z"/></svg></div>
+      <div class="ci-response-text">${moodResponses[mood]}</div>
+      <button class="ci-done-btn" onclick="finishCheckin()">Dank je, Buddy 💛</button>
+    </div>`;
+}
+function finishCheckin(){
+  closeCheckin();
+  go('home');
+  setTimeout(()=>toast('Check-in opgeslagen · 6 dagen reeks 🔥'),400);
+}
+// store step1 template
+window.addEventListener('DOMContentLoaded',()=>{
+  const tpl=document.createElement('div');
+  tpl.id='ciStep1Template';tpl.style.display='none';
+  tpl.innerHTML=document.getElementById('ciBody').innerHTML;
+  document.body.appendChild(tpl);
+});
+
+// ═══ PAYWALL ═══
+function openPaywall(){document.getElementById('paywall').classList.add('active')}
+document.getElementById('paywall').addEventListener('click',function(e){
+  if(e.target===this)this.classList.remove('active');
+});
+function payMollie(){
+  toast('→ Doorsturen naar Mollie checkout…');
+  setTimeout(()=>{
+    document.getElementById('paywall').classList.remove('active');
+    toast('✓ Premium geactiveerd! (demo)');
+  },1600);
+}
+</script>
+</body>
+</html>
