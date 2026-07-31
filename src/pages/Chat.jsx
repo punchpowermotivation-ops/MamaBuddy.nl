@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -15,11 +16,15 @@ function formatTime(iso) {
 
 export default function Chat() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [messages, setMessages] = useState([]);
   const [hadPreviousSession, setHadPreviousSession] = useState(false);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
+  const [typing, setTyping] = useState(false);
+  const [limitReached, setLimitReached] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
   const scrollRef = useRef(null);
 
   useEffect(() => {
@@ -51,22 +56,57 @@ export default function Chat() {
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
-  }, [messages]);
+  }, [messages, typing]);
 
   async function send(text) {
     const value = text.trim();
     if (!value || sending) return;
     setSending(true);
     setInput('');
+    setErrorMsg('');
 
-    const { data, error } = await supabase
-      .from('messages')
-      .insert({ user_id: user.id, role: 'user', content: value })
-      .select()
-      .single();
+    const tempId = `temp-${Date.now()}`;
+    setMessages((prev) => [
+      ...prev,
+      { id: tempId, role: 'user', content: value, created_at: new Date().toISOString() },
+    ]);
+    setTyping(true);
 
-    if (!error) setMessages((prev) => [...prev, data]);
+    const { data, error } = await supabase.functions.invoke('buddy-chat', {
+      body: { message: value },
+    });
+
+    setTyping(false);
     setSending(false);
+
+    if (error || data?.error) {
+      setMessages((prev) => prev.filter((m) => m.id !== tempId));
+      setErrorMsg('Kon je bericht niet versturen. Probeer het nog eens.');
+      return;
+    }
+
+    if (data.limitReached) {
+      setMessages((prev) => prev.filter((m) => m.id !== tempId));
+      setLimitReached(true);
+      return;
+    }
+
+    setMessages((prev) => {
+      const withoutTemp = prev.filter((m) => m.id !== tempId);
+      const userRow = data.userMessage ?? {
+        id: tempId,
+        role: 'user',
+        content: value,
+        created_at: new Date().toISOString(),
+      };
+      const buddyRow = {
+        id: `buddy-${Date.now()}`,
+        role: 'buddy',
+        content: data.reply,
+        created_at: new Date().toISOString(),
+      };
+      return [...withoutTemp, userRow, buddyRow];
+    });
   }
 
   return (
@@ -130,6 +170,33 @@ export default function Chat() {
             </div>
           ))
         )}
+
+        {typing && (
+          <div className="self-start bg-white px-4.5 py-3.5 rounded-[20px] rounded-bl-[5px] shadow-[0_2px_10px_rgba(30,26,24,.04)]">
+            <div className="flex gap-1">
+              <span className="w-1.5 h-1.5 bg-muted rounded-full animate-bounce [animation-delay:0ms]" />
+              <span className="w-1.5 h-1.5 bg-muted rounded-full animate-bounce [animation-delay:150ms]" />
+              <span className="w-1.5 h-1.5 bg-muted rounded-full animate-bounce [animation-delay:300ms]" />
+            </div>
+          </div>
+        )}
+
+        {errorMsg && <p className="text-rose-dark text-sm text-center my-1">{errorMsg}</p>}
+
+        {limitReached && (
+          <div className="mx-1 mb-1 bg-navy rounded-2xl px-4 py-3 flex items-center gap-3">
+            <p className="flex-1 text-xs text-white/80 leading-snug">
+              <strong className="text-white">Je hebt je 3 gratis berichten gebruikt.</strong>{' '}
+              Praat onbeperkt met Premium.
+            </p>
+            <button
+              onClick={() => navigate('/profiel')}
+              className="bg-rose text-white px-3.5 py-2 rounded-full text-xs font-semibold whitespace-nowrap border-none cursor-pointer"
+            >
+              Upgrade
+            </button>
+          </div>
+        )}
       </div>
 
       <div className="flex gap-2 px-4.5 py-2.5 overflow-x-auto bg-cream flex-shrink-0">
@@ -137,7 +204,8 @@ export default function Chat() {
           <button
             key={s}
             onClick={() => send(s)}
-            className="whitespace-nowrap bg-white border border-line text-mid px-4 py-2.5 rounded-full text-[13px] flex-shrink-0 cursor-pointer"
+            disabled={sending}
+            className="whitespace-nowrap bg-white border border-line text-mid px-4 py-2.5 rounded-full text-[13px] flex-shrink-0 cursor-pointer disabled:opacity-60"
           >
             {s}
           </button>
