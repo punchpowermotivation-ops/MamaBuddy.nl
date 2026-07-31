@@ -1,0 +1,20 @@
+{
+  "name": "MamaBuddy",
+  "short_name": "MamaBuddy",
+  "description": "Jouw persoonlijke Buddy als mama — altijd beschikbaar, warm en begripvol.",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "lang": "nl",
+  "background_color": "#FDF8F3",
+  "theme_color": "#F2567A",
+  "categories": ["lifestyle", "health", "parenting"],
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
