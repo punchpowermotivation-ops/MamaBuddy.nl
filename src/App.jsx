@@ -3,6 +3,11 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Welcome from './pages/Welcome';
 import Onboarding from './pages/Onboarding';
 import Home from './pages/Home';
+import Chat from './pages/Chat';
+import MentalLoad from './pages/MentalLoad';
+import Profile from './pages/Profile';
+import CheckIn from './pages/CheckIn';
+import AppLayout from './components/AppLayout';
 
 function Splash() {
   return (
@@ -12,13 +17,13 @@ function Splash() {
   );
 }
 
-function Gate() {
+function AppGate({ children }) {
   const { session, profile, loading } = useAuth();
 
   if (loading) return <Splash />;
   if (!session) return <Welcome />;
   if (!profile?.onboarding_done) return <Onboarding />;
-  return <Home />;
+  return children;
 }
 
 function RequireOnboardingSession() {
@@ -33,7 +38,27 @@ export default function App() {
     <BrowserRouter>
       <AuthProvider>
         <Routes>
-          <Route path="/" element={<Gate />} />
+          <Route
+            path="/"
+            element={
+              <AppGate>
+                <AppLayout />
+              </AppGate>
+            }
+          >
+            <Route index element={<Home />} />
+            <Route path="chat" element={<Chat />} />
+            <Route path="mijn-hoofd" element={<MentalLoad />} />
+            <Route path="profiel" element={<Profile />} />
+          </Route>
+          <Route
+            path="/check-in"
+            element={
+              <AppGate>
+                <CheckIn />
+              </AppGate>
+            }
+          />
           <Route path="/onboarding" element={<RequireOnboardingSession />} />
         </Routes>
       </AuthProvider>
