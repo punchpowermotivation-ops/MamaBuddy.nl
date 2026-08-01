@@ -32,35 +32,37 @@ const tabs = [
 
 export default function TabBar() {
   return (
-    <div className="min-h-[82px] pb-[env(safe-area-inset-bottom)] bg-white border-t border-line flex items-start justify-around pt-2.5 px-2 flex-shrink-0">
-      {tabs.map((tab) => (
-        <NavLink
-          key={tab.to}
-          to={tab.to}
-          end={tab.to === '/'}
-          className={({ isActive }) =>
-            `flex flex-col items-center gap-1 px-3.5 py-1.5 rounded-2xl flex-1 ${
-              isActive ? 'text-rose' : 'text-muted'
-            }`
-          }
-        >
-          {({ isActive }) => (
-            <>
-              <svg
-                viewBox="0 0 24 24"
-                width="24"
-                height="24"
-                stroke="currentColor"
-                fill={isActive ? '#FDE8EE' : 'none'}
-                strokeWidth="1.8"
-              >
-                {tab.icon}
-              </svg>
-              <span className="text-[10px] font-medium">{tab.label}</span>
-            </>
-          )}
-        </NavLink>
-      ))}
+    <div className="fixed left-4 right-4 z-30 bottom-[calc(18px+env(safe-area-inset-bottom))]">
+      <div className="max-w-[420px] mx-auto bg-white/95 backdrop-blur-md border border-line rounded-[26px] shadow-[0_10px_30px_rgba(30,26,24,.14)] flex items-center justify-around px-1.5 py-2">
+        {tabs.map((tab) => (
+          <NavLink
+            key={tab.to}
+            to={tab.to}
+            end={tab.to === '/'}
+            className={({ isActive }) =>
+              `flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-2xl flex-1 transition-colors ${
+                isActive ? 'text-rose' : 'text-muted'
+              }`
+            }
+          >
+            {({ isActive }) => (
+              <>
+                <svg
+                  viewBox="0 0 24 24"
+                  width="22"
+                  height="22"
+                  stroke="currentColor"
+                  fill={isActive ? '#FDE8EE' : 'none'}
+                  strokeWidth="1.8"
+                >
+                  {tab.icon}
+                </svg>
+                <span className="text-[10px] font-medium">{tab.label}</span>
+              </>
+            )}
+          </NavLink>
+        ))}
+      </div>
     </div>
   );
 }
