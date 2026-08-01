@@ -8,7 +8,10 @@ export default function Welcome() {
   const [sentTo, setSentTo] = useState('');
   const [error, setError] = useState('');
   const [sending, setSending] = useState(false);
-  const { signInWithMagicLink } = useAuth();
+  const [code, setCode] = useState('');
+  const [codeError, setCodeError] = useState('');
+  const [verifying, setVerifying] = useState(false);
+  const { signInWithMagicLink, verifyEmailCode } = useAuth();
 
   async function handleSend(e) {
     e.preventDefault();
@@ -23,6 +26,18 @@ export default function Welcome() {
     }
     setSentTo(email.trim());
     setStep('sent');
+  }
+
+  async function handleVerifyCode(e) {
+    e.preventDefault();
+    if (!code.trim()) return;
+    setVerifying(true);
+    setCodeError('');
+    const { error } = await verifyEmailCode(sentTo, code.trim());
+    setVerifying(false);
+    if (error) {
+      setCodeError('Die code klopt niet (meer). Vraag een nieuwe aan.');
+    }
   }
 
   if (step === 'email') {
@@ -98,6 +113,35 @@ export default function Welcome() {
           <strong className="text-ink">Geen mail?</strong> Kijk even in je spam-map, of wacht een
           paar seconden. De link is 15 minuten geldig.
         </div>
+
+        <div className="w-full max-w-xs mt-7 pt-6 border-t border-line">
+          <p className="text-xs text-muted leading-relaxed mb-3">
+            App al toegevoegd aan je beginscherm? Tik niet op de link, maar vul hier de{' '}
+            <strong className="text-mid">6-cijferige code</strong> uit de mail in — dan blijf je
+            ingelogd in de app zelf.
+          </p>
+          <form onSubmit={handleVerifyCode} className="flex gap-2">
+            <input
+              type="text"
+              inputMode="numeric"
+              autoComplete="one-time-code"
+              maxLength={6}
+              value={code}
+              onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
+              placeholder="123456"
+              className="flex-1 bg-white border-[1.5px] border-line rounded-2xl px-4 py-3 text-base text-ink text-center tracking-[0.3em] outline-none focus:border-rose transition-colors"
+            />
+            <button
+              type="submit"
+              disabled={verifying || code.trim().length < 6}
+              className="bg-rose text-white rounded-2xl px-5 text-sm font-semibold border-none cursor-pointer disabled:opacity-50"
+            >
+              {verifying ? '…' : 'OK'}
+            </button>
+          </form>
+          {codeError && <p className="text-rose-dark text-xs mt-2">{codeError}</p>}
+        </div>
+
         <button
           onClick={() => setStep('email')}
           className="text-rose font-medium text-sm mt-6 bg-transparent border-none cursor-pointer"

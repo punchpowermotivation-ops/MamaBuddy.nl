@@ -44,6 +44,11 @@ export function AuthProvider({ children }) {
     return { error };
   }
 
+  async function verifyEmailCode(email, token) {
+    const { error } = await supabase.auth.verifyOtp({ email, token, type: 'email' });
+    return { error };
+  }
+
   async function signOut() {
     await supabase.auth.signOut();
   }
@@ -58,6 +63,7 @@ export function AuthProvider({ children }) {
     profile,
     loading,
     signInWithMagicLink,
+    verifyEmailCode,
     signOut,
     refreshProfile,
   };
