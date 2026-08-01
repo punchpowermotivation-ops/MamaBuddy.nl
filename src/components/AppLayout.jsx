@@ -9,7 +9,7 @@ const TAB_BAR_CLEARANCE = 'pb-[calc(112px+env(safe-area-inset-bottom))]';
 
 export default function AppLayout() {
   return (
-    <div className="h-dvh bg-cream relative">
+    <div className="h-full bg-cream relative">
       <div className={`h-full overflow-y-auto pt-[env(safe-area-inset-top)] ${TAB_BAR_CLEARANCE}`}>
         <Outlet />
       </div>

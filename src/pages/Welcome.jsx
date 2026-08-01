@@ -42,7 +42,7 @@ export default function Welcome() {
 
   if (step === 'email') {
     return (
-      <div className="min-h-dvh bg-cream flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
+      <div className="min-h-full bg-cream flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
         <div className="p-3 flex items-center">
           <button
             onClick={() => setStep('welcome')}
@@ -98,7 +98,7 @@ export default function Welcome() {
 
   if (step === 'sent') {
     return (
-      <div className="min-h-dvh bg-cream flex flex-col items-center justify-center text-center px-10 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
+      <div className="min-h-full bg-cream flex flex-col items-center justify-center text-center px-10 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
         <div className="w-24 h-24 rounded-full bg-rose-light flex items-center justify-center mb-7">
           <svg viewBox="0 0 24 24" width="48" height="48" fill="#F2567A">
             <path d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6zm-2 0l-8 5-8-5h16zm0 12H4V8l8 5 8-5v10z" />
@@ -153,7 +153,7 @@ export default function Welcome() {
   }
 
   return (
-    <div className="min-h-dvh bg-gradient-to-br from-navy to-[#14110f] flex flex-col relative overflow-hidden pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
+    <div className="min-h-full bg-gradient-to-br from-navy to-[#14110f] flex flex-col relative overflow-hidden pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
       <div className="flex-1 flex flex-col justify-center px-8 relative z-10">
         <div className="mb-11">
           <Logo variant="dark" />
