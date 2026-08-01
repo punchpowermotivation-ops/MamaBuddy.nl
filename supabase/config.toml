@@ -1,0 +1,5 @@
+project_id = "xwgufntboxulorplikwe"
+
+[auth.email.template.magic_link]
+subject = "Jouw MamaBuddy inloglink 💛"
+content_path = "./supabase/templates/magic_link.html"
