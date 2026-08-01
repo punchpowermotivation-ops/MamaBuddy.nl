@@ -117,23 +117,23 @@ export default function Welcome() {
         <div className="w-full max-w-xs mt-7 pt-6 border-t border-line">
           <p className="text-xs text-muted leading-relaxed mb-3">
             App al toegevoegd aan je beginscherm? Tik niet op de link, maar vul hier de{' '}
-            <strong className="text-mid">6-cijferige code</strong> uit de mail in — dan blijf je
-            ingelogd in de app zelf.
+            <strong className="text-mid">code uit de mail</strong> in — dan blijf je ingelogd in
+            de app zelf.
           </p>
           <form onSubmit={handleVerifyCode} className="flex gap-2">
             <input
               type="text"
               inputMode="numeric"
               autoComplete="one-time-code"
-              maxLength={6}
+              maxLength={10}
               value={code}
               onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
-              placeholder="123456"
-              className="flex-1 bg-white border-[1.5px] border-line rounded-2xl px-4 py-3 text-base text-ink text-center tracking-[0.3em] outline-none focus:border-rose transition-colors"
+              placeholder="code"
+              className="flex-1 bg-white border-[1.5px] border-line rounded-2xl px-4 py-3 text-base text-ink text-center tracking-[0.2em] outline-none focus:border-rose transition-colors"
             />
             <button
               type="submit"
-              disabled={verifying || code.trim().length < 6}
+              disabled={verifying || !code.trim()}
               className="bg-rose text-white rounded-2xl px-5 text-sm font-semibold border-none cursor-pointer disabled:opacity-50"
             >
               {verifying ? '…' : 'OK'}

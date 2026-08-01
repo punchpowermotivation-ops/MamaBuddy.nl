@@ -1,24 +1,43 @@
 <!DOCTYPE html>
 <html lang="nl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light" />
+    <meta name="supported-color-schemes" content="light" />
+    <title>MamaBuddy</title>
+    <style>
+      :root { color-scheme: light; supported-color-schemes: light; }
+      body, table, td { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+      @media (prefers-color-scheme: dark) {
+        body, .mb-bg { background-color: #0d0b0a !important; }
+        .mb-card { background-color: #FDF8F3 !important; }
+        .mb-heading, .mb-code { color: #1E1A18 !important; }
+        .mb-body { color: #5C4F47 !important; }
+        .mb-muted { color: #9B8F88 !important; }
+        .mb-wordmark { color: #ffffff !important; }
+      }
+    </style>
+  </head>
   <body style="margin:0;padding:0;background-color:#0d0b0a;font-family:'DM Sans',Helvetica,Arial,sans-serif;">
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#0d0b0a;padding:32px 16px;">
       <tr>
         <td align="center">
-          <table role="presentation" width="100%" style="max-width:420px;background-color:#FDF8F3;border-radius:28px;overflow:hidden;">
+          <table role="presentation" width="100%" class="mb-card" style="max-width:420px;background-color:#FDF8F3;border-radius:28px;overflow:hidden;">
             <tr>
               <td style="background:linear-gradient(135deg,#1E2640 0%,#14110f 100%);padding:36px 32px 32px;text-align:center;">
                 <img src="https://mamabuddy-app.vercel.app/icon-512.png" width="56" height="56" alt="MamaBuddy" style="border-radius:50%;display:inline-block;margin-bottom:14px;" />
-                <div style="font-family:Georgia,'Times New Roman',serif;font-size:22px;font-weight:600;color:#ffffff;letter-spacing:0.2px;">
+                <div class="mb-wordmark" style="font-family:Georgia,'Times New Roman',serif;font-size:22px;font-weight:600;color:#ffffff;letter-spacing:0.2px;">
                   MamaBuddy
                 </div>
               </td>
             </tr>
             <tr>
               <td style="padding:36px 32px 8px;text-align:center;">
-                <h1 style="margin:0 0 12px;font-family:Georgia,'Times New Roman',serif;font-weight:400;font-size:26px;line-height:1.25;color:#1E1A18;">
+                <h1 class="mb-heading" style="margin:0 0 12px;font-family:Georgia,'Times New Roman',serif;font-weight:400;font-size:26px;line-height:1.25;color:#1E1A18;">
                   Jouw inloglink is er 💛
                 </h1>
-                <p style="margin:0 0 28px;font-size:15px;line-height:1.6;color:#5C4F47;">
+                <p class="mb-body" style="margin:0 0 28px;font-size:15px;line-height:1.6;color:#5C4F47;">
                   Geen wachtwoord nodig — één tik en je bent binnen bij Buddy.
                 </p>
               </td>
@@ -42,12 +61,12 @@
             </tr>
             <tr>
               <td style="padding:8px 32px 0;text-align:center;">
-                <p style="margin:0 0 14px;font-size:13px;line-height:1.6;color:#9B8F88;">
+                <p class="mb-muted" style="margin:0 0 14px;font-size:13px;line-height:1.6;color:#9B8F88;">
                   App al toegevoegd aan je beginscherm? Tik dan niet op de knop hierboven,
                   maar vul deze code direct in de app zelf in — dan blijf je binnen de app ingelogd.
                 </p>
-                <div style="display:inline-block;background-color:#ffffff;border:2px solid #F2567A;border-radius:16px;padding:16px 28px;margin-bottom:8px;">
-                  <span style="font-family:'DM Sans',Helvetica,Arial,sans-serif;font-size:28px;font-weight:600;letter-spacing:8px;color:#1E1A18;">
+                <div style="display:inline-block;background-color:#ffffff;border:2px solid #F2567A;border-radius:16px;padding:16px 20px;margin-bottom:8px;max-width:100%;">
+                  <span class="mb-code" style="font-family:'DM Sans',Helvetica,Arial,sans-serif;font-size:22px;font-weight:600;letter-spacing:4px;color:#1E1A18;white-space:nowrap;">
                     {{ .Token }}
                   </span>
                 </div>
@@ -55,7 +74,7 @@
             </tr>
             <tr>
               <td style="padding:24px 32px 36px;text-align:center;">
-                <p style="margin:0;font-size:12px;line-height:1.6;color:#9B8F88;">
+                <p class="mb-muted" style="margin:0;font-size:12px;line-height:1.6;color:#9B8F88;">
                   Deze link en code zijn 15 minuten geldig. Niet zelf aangevraagd? Dan kun je
                   deze mail gewoon negeren — er verandert niets aan je account.
                 </p>
