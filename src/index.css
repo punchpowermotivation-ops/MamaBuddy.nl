@@ -23,13 +23,19 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+html,
 body {
   margin: 0;
-  font-family: var(--font-sans);
+  height: 100%;
   background: var(--color-cream);
+  overscroll-behavior-y: none;
+}
+
+body {
+  font-family: var(--font-sans);
   color: var(--color-ink);
 }
 
 #root {
-  min-height: 100svh;
+  height: 100svh;
 }

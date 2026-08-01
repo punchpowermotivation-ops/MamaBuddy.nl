@@ -4,8 +4,8 @@ import InstallPrompt from './InstallPrompt';
 
 export default function AppLayout() {
   return (
-    <div className="min-h-svh bg-cream flex flex-col relative">
-      <div className="flex-1 overflow-y-auto">
+    <div className="h-svh bg-cream flex flex-col relative pt-[env(safe-area-inset-top)]">
+      <div className="flex-1 min-h-0 overflow-y-auto">
         <Outlet />
       </div>
       <InstallPrompt />

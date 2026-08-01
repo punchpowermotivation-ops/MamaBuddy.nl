@@ -110,7 +110,7 @@ export default function Chat() {
   }
 
   return (
-    <div className="flex flex-col h-svh">
+    <div className="flex flex-col h-full">
       <div className="px-5 py-2 pb-3.5 flex items-center gap-3 border-b border-line bg-white flex-shrink-0">
         <div className="w-11 h-11 bg-rose-light rounded-full flex items-center justify-center flex-shrink-0">
           <svg viewBox="0 0 20 18" width="24" height="24" fill="#F2567A">

@@ -32,7 +32,7 @@ const tabs = [
 
 export default function TabBar() {
   return (
-    <div className="h-[82px] bg-white border-t border-line flex items-start justify-around pt-2.5 px-2 flex-shrink-0">
+    <div className="min-h-[82px] pb-[env(safe-area-inset-bottom)] bg-white border-t border-line flex items-start justify-around pt-2.5 px-2 flex-shrink-0">
       {tabs.map((tab) => (
         <NavLink
           key={tab.to}
