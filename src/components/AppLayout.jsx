@@ -2,15 +2,10 @@ import { Outlet } from 'react-router-dom';
 import TabBar from './TabBar';
 import InstallPrompt from './InstallPrompt';
 
-// Reserved space at the bottom for the floating pill tab bar, so page
-// content never renders underneath it: pill (~52px) + its offset from the
-// edge (18px) + comfortable breathing room above the pill.
-const TAB_BAR_CLEARANCE = 'pb-[calc(112px+env(safe-area-inset-bottom))]';
-
 export default function AppLayout() {
   return (
-    <div className="h-full bg-cream relative">
-      <div className={`h-full overflow-y-auto pt-[env(safe-area-inset-top)] ${TAB_BAR_CLEARANCE}`}>
+    <div className="full-bleed-min-height bg-cream flex flex-col relative">
+      <div className="flex-1 min-h-0 overflow-y-auto pt-[env(safe-area-inset-top)]">
         <Outlet />
       </div>
       <InstallPrompt />

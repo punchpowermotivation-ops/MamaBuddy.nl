@@ -39,3 +39,22 @@ body {
 #root {
   height: 100%;
 }
+
+/* Full-bleed helpers for the app shell and full-screen routes
+   (Welcome/Onboarding/Check-in). 100% is the universal fallback; dvh is a
+   progressive enhancement layered on via @supports, since plain duplicate
+   declarations get collapsed by the production CSS minifier (it keeps only
+   the last one, silently dropping the fallback). */
+.full-bleed-min-height {
+  min-height: 100%;
+}
+
+@supports (height: 100dvh) {
+  #root {
+    height: 100dvh;
+  }
+
+  .full-bleed-min-height {
+    min-height: 100dvh;
+  }
+}
