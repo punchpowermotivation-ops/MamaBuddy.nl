@@ -27,8 +27,8 @@ html,
 body {
   margin: 0;
   height: 100%;
+  overflow: hidden;
   background: var(--color-cream);
-  overscroll-behavior-y: none;
 }
 
 body {
@@ -40,21 +40,14 @@ body {
   height: 100%;
 }
 
-/* Full-bleed helpers for the app shell and full-screen routes
-   (Welcome/Onboarding/Check-in). 100% is the universal fallback; dvh is a
-   progressive enhancement layered on via @supports, since plain duplicate
-   declarations get collapsed by the production CSS minifier (it keeps only
-   the last one, silently dropping the fallback). */
-.full-bleed-min-height {
-  min-height: 100%;
-}
-
-@supports (height: 100dvh) {
-  #root {
-    height: 100dvh;
-  }
-
-  .full-bleed-min-height {
-    min-height: 100dvh;
-  }
+/* Every screen is pinned to the true viewport via position:fixed + inset:0,
+   which sizes it exactly regardless of any ancestor's height/overflow
+   quirks or content that grows past one screen (e.g. a long chat). Only the
+   inner .app-content-style scroll region inside each screen scrolls; html/
+   body have overflow:hidden above so the page itself never does. */
+.app-shell {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
 }

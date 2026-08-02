@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'mamabuddy-v3';
+const CACHE_VERSION = 'mamabuddy-v4';
 const SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const ASSET_CACHE = `${CACHE_VERSION}-assets`;
 
