@@ -31,42 +31,40 @@ const tabs = [
 ];
 
 export default function TabBar() {
-  // A normal flex sibling (flex-shrink-0) at the end of the app shell's
-  // flex column — never position:fixed/portaled. That guarantees it always
-  // renders after the scrollable content in normal document flow, so
-  // content can never end up underneath it.
+  // .app-tabbar (plain CSS, src/index.css) does the actual position:fixed
+  // anchoring — it's rendered as a sibling of .app-shell, not nested inside
+  // any flex/overflow container, so there's nothing that can drag it
+  // along during a scroll gesture.
   return (
-    <div className="flex-shrink-0 px-4 pt-2 pb-[calc(14px+env(safe-area-inset-bottom))]">
-      <div className="max-w-[420px] mx-auto bg-white border border-line rounded-[26px] shadow-[0_10px_30px_rgba(30,26,24,.14)] flex items-center justify-around px-1.5 py-2">
-        {tabs.map((tab) => (
-          <NavLink
-            key={tab.to}
-            to={tab.to}
-            end={tab.to === '/'}
-            className={({ isActive }) =>
-              `flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-2xl flex-1 transition-colors ${
-                isActive ? 'text-rose' : 'text-muted'
-              }`
-            }
-          >
-            {({ isActive }) => (
-              <>
-                <svg
-                  viewBox="0 0 24 24"
-                  width="22"
-                  height="22"
-                  stroke="currentColor"
-                  fill={isActive ? '#FDE8EE' : 'none'}
-                  strokeWidth="1.8"
-                >
-                  {tab.icon}
-                </svg>
-                <span className="text-[10px] font-medium">{tab.label}</span>
-              </>
-            )}
-          </NavLink>
-        ))}
-      </div>
-    </div>
+    <nav className="app-tabbar">
+      {tabs.map((tab) => (
+        <NavLink
+          key={tab.to}
+          to={tab.to}
+          end={tab.to === '/'}
+          className={({ isActive }) =>
+            `flex flex-col items-center gap-0.5 px-3 py-2.5 flex-1 transition-colors ${
+              isActive ? 'text-rose' : 'text-muted'
+            }`
+          }
+        >
+          {({ isActive }) => (
+            <>
+              <svg
+                viewBox="0 0 24 24"
+                width="22"
+                height="22"
+                stroke="currentColor"
+                fill={isActive ? '#FDE8EE' : 'none'}
+                strokeWidth="1.8"
+              >
+                {tab.icon}
+              </svg>
+              <span className="text-[10px] font-medium">{tab.label}</span>
+            </>
+          )}
+        </NavLink>
+      ))}
+    </nav>
   );
 }

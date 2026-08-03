@@ -26,8 +26,6 @@
 html,
 body {
   margin: 0;
-  height: 100%;
-  overflow: hidden;
   background: var(--color-cream);
 }
 
@@ -36,18 +34,39 @@ body {
   color: var(--color-ink);
 }
 
-#root {
-  height: 100%;
+/* The app shell no longer traps scroll in a nested flex/overflow
+   container — iOS Safari/Chrome have a well-documented reliability issue
+   with position:fixed siblings inside such containers, where the "fixed"
+   element can still drift with the page during a scroll gesture. Instead
+   the page scrolls completely normally, and .app-tabbar is the only truly
+   fixed element, anchored straight to the viewport with nothing wrapping
+   it that could interfere. */
+.app-shell {
+  min-height: 100dvh;
+  background: var(--color-cream);
 }
 
-/* Every screen is pinned to the true viewport via position:fixed + inset:0,
-   which sizes it exactly regardless of any ancestor's height/overflow
-   quirks or content that grows past one screen (e.g. a long chat). Only the
-   inner .app-content-style scroll region inside each screen scrolls; html/
-   body have overflow:hidden above so the page itself never does. */
-.app-shell {
+.app-content {
+  min-height: 100dvh;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: calc(90px + env(safe-area-inset-bottom));
+  -webkit-overflow-scrolling: touch;
+}
+
+.app-tabbar {
   position: fixed;
-  inset: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: rgba(253, 248, 243, 0.9);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(30, 26, 24, 0.08);
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 -8px 30px rgba(30, 26, 24, 0.06);
+  padding-bottom: env(safe-area-inset-bottom);
   display: flex;
-  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
 }

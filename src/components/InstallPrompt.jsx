@@ -63,7 +63,7 @@ export default function InstallPrompt() {
   if (!visible) return null;
 
   return (
-    <div className="absolute left-3 right-3 bottom-[calc(84px+env(safe-area-inset-bottom))] z-20 bg-white border border-line rounded-2xl shadow-[0_10px_30px_rgba(30,26,24,.12)] px-4 py-3.5 flex items-center gap-3 animate-[fadeIn_.4s_ease]">
+    <div className="fixed left-3 right-3 bottom-[calc(84px+env(safe-area-inset-bottom))] z-[999] bg-white border border-line rounded-2xl shadow-[0_10px_30px_rgba(30,26,24,.12)] px-4 py-3.5 flex items-center gap-3 animate-[fadeIn_.4s_ease]">
       <div className="w-11 h-11 rounded-xl bg-rose-light flex items-center justify-center flex-shrink-0">
         <svg viewBox="0 0 20 18" width="22" height="22" fill="#F2567A">
           <path d="M10 16.5S1 11 1 5a4 4 0 0 1 8-1 1 1 0 0 0 2 0 4 4 0 0 1 8 1c0 6-9 11.5-9 11.5z" />

@@ -48,7 +48,7 @@ export default function Onboarding() {
 
   if (entered) {
     return (
-      <div className="app-shell overflow-y-auto bg-gradient-to-br from-navy to-[#14110f] flex flex-col items-center justify-center px-10 text-center pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
+      <div className="app-shell bg-gradient-to-br from-navy to-[#14110f] flex flex-col items-center justify-center px-10 text-center pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
         <div className="w-20 h-20 rounded-full bg-rose-light flex items-center justify-center mb-6">
           <svg viewBox="0 0 20 18" width="42" height="42" fill="#F2567A">
             <path d="M10 16.5S1 11 1 5a4 4 0 0 1 8-1 1 1 0 0 0 2 0 4 4 0 0 1 8 1c0 6-9 11.5-9 11.5z" />
@@ -71,7 +71,7 @@ export default function Onboarding() {
   }
 
   return (
-    <div className="app-shell overflow-y-auto bg-cream pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
+    <div className="app-shell flex flex-col bg-cream pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
       <div className="p-4 flex items-center gap-3">
         <div className="flex-1 h-1 bg-sand rounded-full overflow-hidden">
           <div

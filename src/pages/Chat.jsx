@@ -25,7 +25,7 @@ export default function Chat() {
   const [typing, setTyping] = useState(false);
   const [limitReached, setLimitReached] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
-  const scrollRef = useRef(null);
+  const bottomRef = useRef(null);
 
   useEffect(() => {
     if (!user) return;
@@ -55,7 +55,7 @@ export default function Chat() {
   }, [user]);
 
   useEffect(() => {
-    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
+    bottomRef.current?.scrollIntoView({ block: 'end' });
   }, [messages, typing]);
 
   async function send(text) {
@@ -110,8 +110,8 @@ export default function Chat() {
   }
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="px-5 py-2 pb-3.5 flex items-center gap-3 border-b border-line bg-white flex-shrink-0">
+    <div className="min-h-full flex flex-col">
+      <div className="sticky top-0 z-10 px-5 py-2 pb-3.5 flex items-center gap-3 border-b border-line bg-white">
         <div className="w-11 h-11 bg-rose-light rounded-full flex items-center justify-center flex-shrink-0">
           <svg viewBox="0 0 20 18" width="24" height="24" fill="#F2567A">
             <path d="M10 16.5S1 11 1 5a4 4 0 0 1 8-1 1 1 0 0 0 2 0 4 4 0 0 1 8 1c0 6-9 11.5-9 11.5z" />
@@ -126,10 +126,7 @@ export default function Chat() {
         </div>
       </div>
 
-      <div
-        ref={scrollRef}
-        className="flex-1 overflow-y-auto px-4.5 pt-5 pb-2 flex flex-col gap-3 bg-cream"
-      >
+      <div className="flex-1 px-4.5 pt-5 pb-3 flex flex-col gap-3 bg-cream">
         {!loading && (
           <div className="text-center text-[11px] text-muted my-1">Vandaag</div>
         )}
@@ -197,44 +194,47 @@ export default function Chat() {
             </button>
           </div>
         )}
+        <div ref={bottomRef} />
       </div>
 
-      <div className="flex gap-2 px-4.5 py-2.5 overflow-x-auto bg-cream flex-shrink-0">
-        {SUGGESTIONS.map((s) => (
-          <button
-            key={s}
-            onClick={() => send(s)}
-            disabled={sending}
-            className="whitespace-nowrap bg-white border border-line text-mid px-4 py-2.5 rounded-full text-[13px] flex-shrink-0 cursor-pointer disabled:opacity-60"
-          >
-            {s}
-          </button>
-        ))}
-      </div>
+      <div className="sticky bottom-[90px] z-10">
+        <div className="flex gap-2 px-4.5 py-2.5 overflow-x-auto bg-cream">
+          {SUGGESTIONS.map((s) => (
+            <button
+              key={s}
+              onClick={() => send(s)}
+              disabled={sending}
+              className="whitespace-nowrap bg-white border border-line text-mid px-4 py-2.5 rounded-full text-[13px] flex-shrink-0 cursor-pointer disabled:opacity-60"
+            >
+              {s}
+            </button>
+          ))}
+        </div>
 
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          send(input);
-        }}
-        className="px-4 py-3 pb-4.5 bg-white border-t border-line flex items-center gap-2.5 flex-shrink-0"
-      >
-        <input
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Type je bericht…"
-          className="flex-1 bg-sand border-none rounded-full px-4.5 py-3 text-[14.5px] text-ink outline-none"
-        />
-        <button
-          type="submit"
-          disabled={sending}
-          className="w-11 h-11 bg-rose rounded-full flex items-center justify-center flex-shrink-0 border-none cursor-pointer disabled:opacity-60"
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            send(input);
+          }}
+          className="px-4 py-3 pb-4.5 bg-white border-t border-line flex items-center gap-2.5"
         >
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="white">
-            <path d="M2 21l21-9L2 3v7l15 2-15 2z" />
-          </svg>
-        </button>
-      </form>
+          <input
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Type je bericht…"
+            className="flex-1 bg-sand border-none rounded-full px-4.5 py-3 text-[14.5px] text-ink outline-none"
+          />
+          <button
+            type="submit"
+            disabled={sending}
+            className="w-11 h-11 bg-rose rounded-full flex items-center justify-center flex-shrink-0 border-none cursor-pointer disabled:opacity-60"
+          >
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="white">
+              <path d="M2 21l21-9L2 3v7l15 2-15 2z" />
+            </svg>
+          </button>
+        </form>
+      </div>
     </div>
   );
 }

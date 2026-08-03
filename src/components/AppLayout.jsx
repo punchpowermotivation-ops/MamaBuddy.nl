@@ -4,12 +4,14 @@ import InstallPrompt from './InstallPrompt';
 
 export default function AppLayout() {
   return (
-    <div className="app-shell bg-cream">
-      <main className="flex-1 min-h-0 overflow-y-auto [-webkit-overflow-scrolling:touch] pt-[env(safe-area-inset-top)]">
-        <Outlet />
-      </main>
+    <>
+      <div className="app-shell">
+        <main className="app-content">
+          <Outlet />
+        </main>
+      </div>
       <InstallPrompt />
       <TabBar />
-    </div>
+    </>
   );
 }
