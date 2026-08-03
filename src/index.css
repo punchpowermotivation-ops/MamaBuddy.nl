@@ -63,7 +63,8 @@ body {
   left: 0;
   right: 0;
   z-index: 1000;
-  background: rgba(253, 248, 243, 0.9);
+  min-height: 78px;
+  background: rgba(253, 248, 243, 0.75);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-top: 1px solid rgba(30, 26, 24, 0.08);
