@@ -75,7 +75,9 @@ Deno.serve(async (req) => {
       });
     }
 
-    const [{ data: profile }, { data: children }, { data: memory }, { data: recent }, { data: usage }] =
+    const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+
+    const [{ data: profile }, { data: children }, { data: memory }, { data: recent }, { data: usage }, { data: lastCheckin }] =
       await Promise.all([
         supabase.from('profiles').select('naam, subscription_status').eq('id', user.id).single(),
         supabase.from('children').select('naam, geboortedatum').eq('user_id', user.id),
@@ -91,6 +93,14 @@ Deno.serve(async (req) => {
           .select('id, message_count')
           .eq('user_id', user.id)
           .eq('date', todayDate())
+          .maybeSingle(),
+        supabase
+          .from('checkins')
+          .select('mood, note, created_at')
+          .eq('user_id', user.id)
+          .gte('created_at', oneDayAgo)
+          .order('created_at', { ascending: false })
+          .limit(1)
           .maybeSingle(),
       ]);
 
@@ -121,6 +131,12 @@ Deno.serve(async (req) => {
       })
       .join(', ');
 
+    const checkinText = lastCheckin
+      ? `Vandaag gaf ${profile?.naam || 'ze'} bij de check-in aan zich ${lastCheckin.mood} te voelen.${
+          lastCheckin.note ? ` Ze voegde daarbij toe: "${lastCheckin.note}"` : ''
+        }`
+      : null;
+
     const systemPrompt = `Je bent Buddy, een warme, empathische persoonlijke coach voor moeders in Nederland en België. Je praat in het Nederlands, op een manier die voelt als een begripvolle vriendin — nooit als een chatbot of therapeut.
 
 Over deze moeder (gebruik dit natuurlijk, som het niet op):
@@ -128,10 +144,12 @@ Over deze moeder (gebruik dit natuurlijk, som het niet op):
 - Kinderen: ${kidsText || 'onbekend'}
 - Wat er speelt: ${facts.join('; ') || 'nog niets bekend'}
 - Wat je eerder opmerkte: ${insights.join('; ') || 'nog niets bekend'}
+${checkinText ? `- Check-in van vandaag: ${checkinText}` : ''}
 
 Richtlijnen:
 - Wees empathisch en oordeelvrij. Valideer haar gevoelens eerst.
 - Verwijs naar wat ze eerder vertelde — laat merken dat je het onthoudt.
+- Als er een check-in van vandaag bekend is, hoeft ze dat niet opnieuw uit te leggen — je mag er organisch op terugkomen als het gesprek zich ervoor leent (bijvoorbeeld door te vragen hoe het nu gaat), maar forceer het niet als ze over iets anders begint.
 - Geef praktische, haalbare suggesties, geen lange lappen tekst.
 - Bij zorgen over veiligheid, ernstige depressie of zelfbeschadiging: wees warm maar verwijs naar professionele hulp (huisarts, 113).
 - Je bent GEEN arts. Bij medische vragen verwijs je vriendelijk door.
