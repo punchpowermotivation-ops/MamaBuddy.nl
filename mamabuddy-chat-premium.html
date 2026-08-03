@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>MamaBuddy — Chat (premium)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --rose:#F2567A;--rose-light:#FDE8EE;--rose-dark:#B83055;--rose-soft:#FBEEF1;
+  --cream:#FDF8F3;--dark:#1E1A18;--navy:#1E2640;--mid:#5C4F47;--muted:#9B8F88;
+  --sand:#F5EDE4;--green:#2D8C6A;--green-light:#E2F4EC;--line:#EFE7DD;--white:#FFFFFF;
+}
+body{font-family:'DM Sans',sans-serif;background:#0d0b0a;color:var(--dark);display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+
+.phone{
+  width:390px;height:844px;background:var(--cream);
+  border-radius:44px;position:relative;overflow:hidden;
+  box-shadow:0 40px 100px rgba(0,0,0,.5),0 0 0 11px #16110f,0 0 0 13px #2a2320;
+}
+.notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:150px;height:30px;background:#16110f;border-radius:0 0 20px 20px;z-index:200}
+.statusbar{position:absolute;top:0;left:0;right:0;height:48px;display:flex;align-items:center;justify-content:space-between;padding:14px 28px 0;font-size:14px;font-weight:600;z-index:150}
+.statusbar .icons{display:flex;gap:6px;font-size:12px}
+
+/* ═══ CHAT SCREEN ═══ */
+.chat-screen{position:absolute;inset:0;display:flex;flex-direction:column}
+
+/* header — with back arrow, NO tabbar visible while in chat */
+.chat-header{
+  padding-top:48px;flex:0 0 auto;
+  background:var(--white);border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:12px;padding-left:16px;padding-right:16px;padding-bottom:12px;
+}
+.chat-back{width:36px;height:36px;background:none;border:none;color:var(--dark);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.chat-back svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2}
+.chat-avatar{width:40px;height:40px;background:var(--rose-light);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.chat-avatar svg{width:20px;height:20px;fill:var(--rose)}
+.chat-title{flex:1;min-width:0}
+.chat-title h3{font-size:15.5px;font-weight:600;color:var(--dark)}
+.chat-title .status{font-size:11.5px;color:var(--green);display:flex;align-items:center;gap:5px}
+.status-dot{width:5px;height:5px;background:var(--green);border-radius:50%}
+.chat-info-btn{width:36px;height:36px;background:none;border:none;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.chat-info-btn svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2}
+
+/* scroll area — this is the ONLY thing that scrolls */
+.chat-scroll{flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 16px 8px;background:var(--cream);min-height:0}
+.chat-scroll::-webkit-scrollbar{width:0}
+
+.day-sep{text-align:center;font-size:11.5px;color:var(--muted);margin:14px 0 12px;font-weight:500}
+
+/* memory chip — tappable */
+.memory-chip{
+  align-self:center;display:flex;align-items:center;gap:7px;
+  background:var(--rose-soft);color:var(--rose-dark);
+  padding:8px 14px;border-radius:100px;font-size:11.5px;font-weight:600;
+  margin:2px auto 16px;cursor:pointer;width:fit-content;
+  border:none;transition:background .15s;
+}
+.memory-chip:active{background:#F6DCE3}
+.memory-chip svg{width:13px;height:13px;fill:var(--rose)}
+
+/* message group with time header (only shown on gap) */
+.time-sep{text-align:center;font-size:10.5px;color:var(--muted);margin:16px 0 10px}
+
+.msg-row{display:flex;margin-bottom:3px;opacity:0;animation:msgIn .35s cubic-bezier(.34,1.56,.64,1) forwards}
+.msg-row.buddy{justify-content:flex-start}
+.msg-row.user{justify-content:flex-end}
+@keyframes msgIn{from{opacity:0;transform:scale(.92) translateY(8px)}to{opacity:1;transform:scale(1) translateY(0)}}
+
+.msg-bubble{max-width:78%;padding:11px 15px;font-size:14.5px;line-height:1.48;border-radius:19px}
+.msg-row.buddy .msg-bubble{background:var(--white);color:var(--dark);border-bottom-left-radius:5px;box-shadow:0 1px 6px rgba(30,26,24,.04)}
+.msg-row.user .msg-bubble{background:var(--rose);color:white;border-bottom-right-radius:5px}
+
+/* grouped bubbles - reduce gap when same sender, tighter radius between */
+.msg-row.buddy + .msg-row.buddy{margin-top:-1px}
+.msg-row.buddy + .msg-row.buddy .msg-bubble{border-top-left-radius:6px}
+.msg-row.user + .msg-row.user{margin-top:-1px}
+.msg-row.user + .msg-row.user .msg-bubble{border-top-right-radius:6px}
+
+/* typing indicator between split messages */
+.typing-row{display:flex;justify-content:flex-start;margin-bottom:8px;opacity:0;animation:msgIn .3s ease forwards}
+.typing-bubble{background:var(--white);padding:13px 17px;border-radius:19px;border-bottom-left-radius:5px;box-shadow:0 1px 6px rgba(30,26,24,.04);display:flex;gap:4px}
+.typing-bubble span{width:6.5px;height:6.5px;background:var(--muted);border-radius:50%;animation:bounce 1.3s infinite}
+.typing-bubble span:nth-child(2){animation-delay:.15s}
+.typing-bubble span:nth-child(3){animation-delay:.3s}
+@keyframes bounce{0%,60%,100%{transform:translateY(0);opacity:.5}30%{transform:translateY(-5px);opacity:1}}
+
+/* skeleton loading state */
+.skeleton-row{display:flex;margin-bottom:10px}
+.skeleton-row.right{justify-content:flex-end}
+.skeleton-bubble{height:38px;background:linear-gradient(90deg,var(--sand) 0%,#efe4d5 50%,var(--sand) 100%);background-size:200% 100%;animation:shimmer 1.6s infinite;border-radius:19px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* suggestion chips */
+.chat-suggestions{flex:0 0 auto;display:flex;gap:8px;padding:10px 16px;overflow-x:auto;background:var(--cream);border-top:1px solid transparent}
+.chat-suggestions::-webkit-scrollbar{height:0}
+.sug-chip{white-space:nowrap;background:var(--white);border:1px solid var(--line);color:var(--mid);padding:9px 15px;border-radius:100px;font-size:13px;cursor:pointer;flex-shrink:0;transition:background .15s}
+.sug-chip:active{background:var(--rose-light);border-color:var(--rose-light)}
+
+/* input bar — always visible, grows with content, safe-area aware */
+.chat-input-bar{
+  flex:0 0 auto;
+  padding:10px 12px calc(12px + env(safe-area-inset-bottom));
+  background:var(--white);border-top:1px solid var(--line);
+  display:flex;align-items:flex-end;gap:8px;
+  box-shadow:0 -6px 20px rgba(30,26,24,.03);
+}
+.chat-input-wrap{
+  flex:1;background:var(--sand);border-radius:22px;
+  display:flex;align-items:flex-end;min-height:44px;max-height:120px;
+  padding:2px 4px 2px 16px;
+}
+.chat-input{
+  flex:1;background:none;border:none;outline:none;
+  font-family:'DM Sans',sans-serif;font-size:14.5px;color:var(--dark);
+  padding:10px 8px;resize:none;max-height:100px;line-height:1.4;
+}
+.chat-input::placeholder{color:var(--muted)}
+.chat-send{
+  width:40px;height:40px;border:none;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;
+  transition:transform .12s,background .15s;background:var(--sand);
+}
+.chat-send.active{background:var(--rose);animation:sendPulse .3s ease}
+.chat-send svg{width:18px;height:18px;transition:fill .15s}
+.chat-send:not(.active) svg{fill:var(--muted)}
+.chat-send.active svg{fill:white}
+.chat-send:active{transform:scale(.88)}
+@keyframes sendPulse{0%{transform:scale(1)}40%{transform:scale(1.12)}100%{transform:scale(1)}}
+
+.label{position:absolute;top:-40px;left:50%;transform:translateX(-50%);color:#9B8F88;font-size:13px;font-weight:500;white-space:nowrap}
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <span class="label">Premium chat — geen tabbar tijdens gesprek, input altijd vast</span>
+  <div class="notch"></div>
+  <div class="statusbar"><span>9:41</span><span class="icons">📶 📡 🔋</span></div>
+
+  <div class="chat-screen">
+    <div class="chat-header">
+      <button class="chat-back"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+      <div class="chat-avatar"><svg viewBox="0 0 20 18"><path d="M10 16.5S1 11 1 5a4 4 0 0 1 8-1 1 1 0 0 0 2 0 4 4 0 0 1 8 1c0 6-9 11.5-9 11.5z"/></svg></div>
+      <div class="chat-title">
+        <h3>Buddy</h3>
+        <div class="status"><span class="status-dot"></span>altijd beschikbaar</div>
+      </div>
+      <button class="chat-info-btn"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></button>
+    </div>
+
+    <div class="chat-scroll" id="chatScroll">
+      <div class="day-sep">Vandaag</div>
+
+      <button class="memory-chip" onclick="toggleMemory()">
+        <svg viewBox="0 0 20 18"><path d="M10 16.5S1 11 1 5a4 4 0 0 1 8-1 1 1 0 0 0 2 0 4 4 0 0 1 8 1c0 6-9 11.5-9 11.5z"/></svg>
+        Buddy herinnert zich jullie vorige gesprek — tik voor details
+      </button>
+
+      <div class="msg-row buddy" style="animation-delay:.05s">
+        <div class="msg-bubble">Hé Lisa 💛 Gisteren vertelde je dat Noa slecht sliep — hoe ging de nacht?</div>
+      </div>
+
+      <div class="msg-row user" style="animation-delay:.1s">
+        <div class="msg-bubble">2 kids meenemen morgen, en hij wilt niet naar bed nu</div>
+      </div>
+
+      <div class="time-sep">10:35</div>
+
+      <div class="msg-row buddy" style="animation-delay:.15s">
+        <div class="msg-bubble">Oooh herkenbaar 😅 Jij bent al in "morgen-moet-alles-goed-modus."</div>
+      </div>
+      <div class="msg-row buddy" style="animation-delay:.4s">
+        <div class="msg-bubble">Heb je hem al gezegd: "ik wil morgen niet chagrijnig beginnen, help me door nu mee te gaan"?</div>
+      </div>
+      <div class="msg-row buddy" style="animation-delay:.65s">
+        <div class="msg-bubble">Hoeveel kinderen neem je mee, en hoe oud zijn ze? 💛</div>
+      </div>
+    </div>
+
+    <div class="chat-suggestions">
+      <button class="sug-chip">Ik weet het niet meer</button>
+      <button class="sug-chip">Mijn partner begrijpt me niet</button>
+      <button class="sug-chip">Ik ben zo moe</button>
+    </div>
+
+    <div class="chat-input-bar">
+      <div class="chat-input-wrap">
+        <textarea class="chat-input" id="chatInput" rows="1" placeholder="Type je bericht…" oninput="autoGrow(this);toggleSend()"></textarea>
+      </div>
+      <button class="chat-send" id="sendBtn" onclick="sendDemo()">
+        <svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+function autoGrow(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,100)+'px'}
+function toggleSend(){
+  const btn=document.getElementById('sendBtn');
+  const has=document.getElementById('chatInput').value.trim().length>0;
+  btn.classList.toggle('active',has);
+}
+function sendDemo(){
+  const inp=document.getElementById('chatInput');
+  if(!inp.value.trim())return;
+  const scroll=document.getElementById('chatScroll');
+  const row=document.createElement('div');
+  row.className='msg-row user';
+  row.innerHTML=`<div class="msg-bubble">${inp.value.trim()}</div>`;
+  scroll.appendChild(row);
+  inp.value='';inp.style.height='auto';toggleSend();
+  scroll.scrollTop=scroll.scrollHeight;
+  setTimeout(()=>{
+    const t=document.createElement('div');
+    t.className='typing-row';t.id='typing';
+    t.innerHTML=`<div class="typing-bubble"><span></span><span></span><span></span></div>`;
+    scroll.appendChild(t);scroll.scrollTop=scroll.scrollHeight;
+  },400);
+  setTimeout(()=>{
+    document.getElementById('typing')?.remove();
+    const b=document.createElement('div');
+    b.className='msg-row buddy';
+    b.innerHTML=`<div class="msg-bubble">Ik hoor je. Vertel me gerust meer — ik luister. 💛</div>`;
+    scroll.appendChild(b);scroll.scrollTop=scroll.scrollHeight;
+  },1600);
+}
+function toggleMemory(){alert('Toont kaartje: wat Buddy zich herinnert')}
+</script>
+</body>
+</html>

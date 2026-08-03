@@ -47,10 +47,20 @@ export default function App() {
             }
           >
             <Route index element={<Home />} />
-            <Route path="chat" element={<Chat />} />
             <Route path="mijn-hoofd" element={<MentalLoad />} />
             <Route path="profiel" element={<Profile />} />
           </Route>
+          {/* Chat and check-in are full-screen routes without the tab bar,
+              like a native chat app: open one and the tab bar disappears,
+              back arrow returns you to the tabbed app. */}
+          <Route
+            path="/chat"
+            element={
+              <AppGate>
+                <Chat />
+              </AppGate>
+            }
+          />
           <Route
             path="/check-in"
             element={
