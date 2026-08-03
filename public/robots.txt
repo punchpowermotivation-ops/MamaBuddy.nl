@@ -1,0 +1,25 @@
+User-agent: *
+Allow: /
+Disallow: /welkom
+Disallow: /onboarding
+Disallow: /home
+Disallow: /chat
+Disallow: /mijn-hoofd
+Disallow: /profiel
+Disallow: /check-in
+
+# Sta AI-crawlers expliciet toe op de publieke landingpagina
+User-agent: GPTBot
+Allow: /
+User-agent: ChatGPT-User
+Allow: /
+User-agent: ClaudeBot
+Allow: /
+User-agent: anthropic-ai
+Allow: /
+User-agent: PerplexityBot
+Allow: /
+User-agent: Google-Extended
+Allow: /
+
+Sitemap: https://mamabuddy.nl/sitemap.xml
