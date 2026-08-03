@@ -8,6 +8,7 @@ import Chat from './pages/Chat';
 import MentalLoad from './pages/MentalLoad';
 import Profile from './pages/Profile';
 import CheckIn from './pages/CheckIn';
+import Toeslagen from './pages/Toeslagen';
 import AppLayout from './components/AppLayout';
 
 function Splash() {
@@ -74,6 +75,14 @@ export default function App() {
             element={
               <AppGate>
                 <CheckIn />
+              </AppGate>
+            }
+          />
+          <Route
+            path="/toeslagen"
+            element={
+              <AppGate>
+                <Toeslagen />
               </AppGate>
             }
           />

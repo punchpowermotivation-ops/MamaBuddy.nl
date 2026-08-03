@@ -1,13 +1,17 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
+import PaywallModal from '../components/PaywallModal';
 
 export default function Profile() {
   const { profile, signOut } = useAuth();
+  const navigate = useNavigate();
   const [memories, setMemories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState(null);
   const [editValue, setEditValue] = useState('');
+  const [paywallOpen, setPaywallOpen] = useState(false);
 
   useEffect(() => {
     if (!profile) return;
@@ -131,11 +135,26 @@ export default function Profile() {
           <p className="text-[13px] text-white/80 leading-relaxed mb-4 relative">
             Onbeperkt praten, Buddy's volledige geheugen en je wekelijkse overzicht.
           </p>
-          <button className="bg-white text-rose-dark rounded-full px-6 py-3 text-sm font-semibold border-none cursor-pointer relative">
+          <button
+            onClick={() => setPaywallOpen(true)}
+            className="bg-white text-rose-dark rounded-full px-6 py-3 text-sm font-semibold border-none cursor-pointer relative"
+          >
             Bekijk Premium →
           </button>
         </div>
       )}
+
+      <div className="mx-5 mb-4 bg-white border border-line rounded-[20px] overflow-hidden">
+        <div
+          onClick={() => navigate('/toeslagen')}
+          className="px-5 py-4 flex items-center gap-3.5 cursor-pointer"
+        >
+          <span className="flex-1 text-[14.5px] text-ink">Toeslagen & regelingen</span>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#9B8F88" strokeWidth="2">
+            <path d="M9 18l6-6-6-6" />
+          </svg>
+        </div>
+      </div>
 
       <div className="mx-5 mb-6 bg-white border border-line rounded-[20px] overflow-hidden">
         {['Meldingen', 'Privacy & data', 'Hulp & contact'].map((label) => (
@@ -159,6 +178,8 @@ export default function Profile() {
           Uitloggen
         </button>
       </div>
+
+      <PaywallModal open={paywallOpen} onClose={() => setPaywallOpen(false)} />
     </div>
   );
 }

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
+import PaywallModal from '../components/PaywallModal';
 
 const SUGGESTIONS = [
   'Ik weet het niet meer',
@@ -64,6 +65,7 @@ export default function Chat() {
   const [limitReached, setLimitReached] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [justSent, setJustSent] = useState(false);
+  const [paywallOpen, setPaywallOpen] = useState(false);
   const bottomRef = useRef(null);
   const textareaRef = useRef(null);
 
@@ -298,7 +300,7 @@ export default function Chat() {
                   Praat onbeperkt met Premium.
                 </p>
                 <button
-                  onClick={() => navigate('/profiel')}
+                  onClick={() => setPaywallOpen(true)}
                   className="bg-rose text-white px-3.5 py-2 rounded-full text-xs font-semibold whitespace-nowrap border-none cursor-pointer"
                 >
                   Upgrade
@@ -386,6 +388,8 @@ export default function Chat() {
           </div>
         </div>
       )}
+
+      <PaywallModal open={paywallOpen} onClose={() => setPaywallOpen(false)} />
     </div>
   );
 }
