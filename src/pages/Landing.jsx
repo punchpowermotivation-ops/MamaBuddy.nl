@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { FAQS } from '../data/faq';
 
 // Mirrors the .reveal/.visible fade-up-on-scroll pattern from the HTML
 // reference, per element, via IntersectionObserver.
@@ -481,6 +482,31 @@ export default function Landing() {
               </div>
             </Reveal>
           ))}
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="bg-sand px-[5%] py-24">
+        <div className="max-w-[760px] mx-auto">
+          <div className="text-[12.5px] font-medium tracking-[1.6px] uppercase text-rose mb-4 text-center">
+            Veelgestelde vragen
+          </div>
+          <h2 className="font-serif text-[clamp(26px,3.6vw,42px)] font-normal text-center mb-13 leading-[1.2]">
+            Alles wat je wilt weten
+          </h2>
+          <div className="flex flex-col gap-8">
+            {FAQS.map((faq) => (
+              <Reveal key={faq.question}>
+                <div className="bg-white rounded-2xl border border-ink/[.06] p-7">
+                  <h3 className="text-lg font-semibold mb-2.5">{faq.question}</h3>
+                  <p className="text-[15px] text-mid leading-[1.7]">{faq.shortAnswer}</p>
+                  {faq.detail && (
+                    <p className="text-[15px] text-mid leading-[1.7] mt-2">{faq.detail}</p>
+                  )}
+                </div>
+              </Reveal>
+            ))}
+          </div>
         </div>
       </section>
 
