@@ -145,7 +145,10 @@ export default function Landing() {
   return (
     <div className="bg-cream text-ink" style={{ overflowX: 'hidden' }}>
       {/* NAV */}
-      <nav className="fixed top-0 left-0 right-0 z-[100] px-[5%] py-4.5 flex items-center justify-between bg-cream/92 backdrop-blur-md border-b border-ink/[.06]">
+      <nav
+        className="fixed top-0 left-0 right-0 z-[100] px-[5%] pb-4.5 flex items-center justify-between bg-cream/92 backdrop-blur-md border-b border-ink/[.06]"
+        style={{ paddingTop: 'calc(18px + env(safe-area-inset-top))' }}
+      >
         <a href="#" aria-label="MamaBuddy" className="flex items-center">
           <svg width="150" height="34" viewBox="0 0 240 52" fill="none">
             <circle cx="26" cy="26" r="22" stroke="#F2567A" strokeWidth="2.8" />
