@@ -4,7 +4,6 @@
   "outputDirectory": "dist",
   "installCommand": "npm install",
   "rewrites": [
-    { "source": "/", "destination": "/landing.html" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/(.*)", "destination": "/app.html" }
   ]
 }
