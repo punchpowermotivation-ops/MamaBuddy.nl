@@ -5,6 +5,13 @@ import { useAuth } from '../contexts/AuthContext';
 
 const DAY_LABELS = ['ma', 'di', 'wo', 'do', 'vr', 'za', 'zo'];
 
+function greeting(date) {
+  const hour = date.getHours();
+  if (hour < 12) return 'Goedemorgen';
+  if (hour < 18) return 'Goedemiddag';
+  return 'Goedenavond';
+}
+
 function startOfWeek(date) {
   const d = new Date(date);
   const day = (d.getDay() + 6) % 7; // maandag = 0
@@ -75,7 +82,7 @@ export default function Home() {
     <div className="pb-6">
       <div className="px-6 pt-2 pb-4 flex items-center justify-between">
         <div>
-          <div className="text-sm text-muted">Goedemorgen 💛</div>
+          <div className="text-sm text-muted">{greeting(today)} 💛</div>
           <div className="font-serif text-2xl text-ink mt-0.5">
             Hoi {profile?.naam || 'daar'}
           </div>
