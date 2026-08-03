@@ -551,8 +551,8 @@ export default function Landing() {
             Voorwaarden
           </a>{' '}
           &nbsp;·&nbsp;{' '}
-          <a href="mailto:hallo@mamabuddy.nl" className="text-rose no-underline">
-            hallo@mamabuddy.nl
+          <a href="mailto:mamabuddynl@gmail.com" className="text-rose no-underline">
+            mamabuddynl@gmail.com
           </a>
         </p>
         <p>© 2026 MamaBuddy · Gemaakt met ❤️ in Nederland</p>
