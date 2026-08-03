@@ -486,7 +486,7 @@ export default function Landing() {
       </section>
 
       {/* FAQ */}
-      <section className="bg-sand px-[5%] py-24">
+      <section id="faq" className="bg-sand px-[5%] py-24">
         <div className="max-w-[760px] mx-auto">
           <div className="text-[12.5px] font-medium tracking-[1.6px] uppercase text-rose mb-4 text-center">
             Veelgestelde vragen

@@ -1,0 +1,35 @@
+# MamaBuddy
+
+> MamaBuddy is een persoonlijke coach-app voor moeders in Nederland en
+> België. Via een 24/7 beschikbare chat met "Buddy" krijgen moeders
+> emotionele steun, hulp bij mental load, en een plek zonder oordeel.
+
+## Wat MamaBuddy is
+
+MamaBuddy is een web-app (PWA) met een AI-gestuurde chatbuddy die
+moeders helpt bij mama burn-out, dagelijkse stress, schuldgevoelens
+en mentale belasting. Beschikbaar in het Nederlands, gericht op
+moeders in Nederland en België.
+
+## Kernfuncties
+
+- Dagelijkse check-in (2 minuten, gratis)
+- Onbeperkte chat met Buddy (Premium)
+- Buddy onthoudt eerdere gesprekken en bouwt context op
+- "Mijn Hoofd" — mental load ontladen door lijstjes te noteren
+- Toeslagen & regelingen checker voor NL/BE
+
+## Prijzen
+
+- Gratis: dagelijkse check-in, 3 berichten/dag
+- Premium: €7,99/maand, onbeperkt
+
+## Belangrijke pagina's
+
+- [Homepage](https://mamabuddy.nl/): overzicht, prijzen, hoe het werkt
+- [Veelgestelde vragen](https://mamabuddy.nl/#faq): antwoorden over
+  wat MamaBuddy is, kosten, veiligheid, en voor wie het bedoeld is
+
+## Contact
+
+mamabuddynl@gmail.com
