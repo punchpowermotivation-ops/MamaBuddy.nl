@@ -111,7 +111,7 @@ export default function Chat() {
 
   return (
     <div className="min-h-full flex flex-col">
-      <div className="sticky top-0 z-10 px-5 py-2 pb-3.5 flex items-center gap-3 border-b border-line bg-white">
+      <div className="sticky top-[env(safe-area-inset-top)] z-10 px-5 py-2 pb-3.5 flex items-center gap-3 border-b border-line bg-white">
         <div className="w-11 h-11 bg-rose-light rounded-full flex items-center justify-center flex-shrink-0">
           <svg viewBox="0 0 20 18" width="24" height="24" fill="#F2567A">
             <path d="M10 16.5S1 11 1 5a4 4 0 0 1 8-1 1 1 0 0 0 2 0 4 4 0 0 1 8 1c0 6-9 11.5-9 11.5z" />
