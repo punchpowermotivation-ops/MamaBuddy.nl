@@ -53,9 +53,11 @@ export default function Profile() {
           {(profile?.naam || '?')[0]?.toUpperCase()}
         </div>
         <h2 className="font-serif text-2xl font-medium text-ink">{profile?.naam}</h2>
-        <div className="inline-flex items-center gap-1.5 bg-rose-light text-rose-dark px-3.5 py-1.5 rounded-full text-xs font-semibold mt-2">
-          {profile?.subscription_status === 'premium' ? '💛 Premium' : '💛 Founding Member'}
-        </div>
+        {profile?.subscription_status === 'premium' && (
+          <div className="inline-flex items-center gap-1.5 bg-rose-light text-rose-dark px-3.5 py-1.5 rounded-full text-xs font-semibold mt-2">
+            💛 Premium
+          </div>
+        )}
       </div>
 
       <div className="mx-5 mt-2 mb-4 bg-white border border-line rounded-[20px] overflow-hidden">
