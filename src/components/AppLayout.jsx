@@ -5,7 +5,7 @@ import InstallPrompt from './InstallPrompt';
 export default function AppLayout() {
   return (
     <>
-      <div className="app-shell">
+      <div className="app-shell bg-cream">
         <main className="app-content">
           <Outlet />
         </main>

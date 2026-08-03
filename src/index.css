@@ -43,7 +43,11 @@ body {
    it that could interfere. */
 .app-shell {
   min-height: 100dvh;
-  background: var(--color-cream);
+  /* No background here on purpose: the `background` shorthand resets
+     background-image too, and this rule compiles after Tailwind's
+     bg-gradient-to-br utilities — it was silently wiping out the navy
+     gradient on the Welcome screen. Each screen sets its own bg-* class
+     (bg-cream, bg-gradient-to-br, ...) instead. */
 }
 
 .app-content {
