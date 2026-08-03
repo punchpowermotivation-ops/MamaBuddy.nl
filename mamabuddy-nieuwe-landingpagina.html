@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MamaBuddy — Jouw persoonlijke Buddy als mama</title>
+<meta name="description" content="MamaBuddy is jouw persoonlijke coach-app. Buddy onthoudt jou, luistert zonder oordeel, en helpt je hoofd leeg te maken. Gratis te proberen.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --rose:#F2567A;--rose-light:#FDE8EE;--rose-dark:#B83055;--rose-soft:#FBEEF1;
+  --cream:#FDF8F3;--dark:#1E1A18;--navy:#1E2640;--mid:#5C4F47;--muted:#9B8F88;
+  --sand:#F5EDE4;--green:#2D8C6A;--green-light:#E2F4EC;--line:#EFE7DD;
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--dark);overflow-x:hidden}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:18px 5%;display:flex;align-items:center;justify-content:space-between;background:rgba(253,248,243,.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(30,26,24,.06)}
+.logo{display:flex;align-items:center}
+.nav-cta{background:var(--rose);color:white;padding:11px 24px;border-radius:100px;font-size:14px;font-weight:500;text-decoration:none;transition:background .2s,transform .15s;white-space:nowrap}
+.nav-cta:hover{background:var(--rose-dark);transform:translateY(-1px)}
+
+/* HERO */
+.hero{padding:150px 5% 90px;max-width:1140px;margin:0 auto;display:grid;grid-template-columns:1.05fr .95fr;gap:60px;align-items:center}
+.hero-tag{display:inline-flex;align-items:center;gap:8px;background:var(--rose-light);color:var(--rose-dark);padding:6px 14px;border-radius:100px;font-size:13px;font-weight:500;margin-bottom:24px;animation:fadeUp .6s ease both}
+.dot{width:7px;height:7px;background:var(--rose);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.7)}}
+h1{font-family:'Fraunces',serif;font-size:clamp(38px,4.6vw,58px);font-weight:400;line-height:1.08;margin-bottom:20px;animation:fadeUp .6s .1s ease both}
+h1 em{font-style:italic;color:var(--rose)}
+.hero-sub{font-size:18px;color:var(--mid);line-height:1.7;margin-bottom:34px;font-weight:300;max-width:480px;animation:fadeUp .6s .2s ease both}
+.hero-ctas{display:flex;gap:12px;flex-wrap:wrap;animation:fadeUp .6s .3s ease both}
+.btn-primary{background:var(--rose);color:white;padding:16px 30px;border:none;border-radius:100px;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:500;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:background .2s,transform .15s}
+.btn-primary:hover{background:var(--rose-dark);transform:translateY(-2px)}
+.btn-ghost{background:transparent;color:var(--dark);padding:16px 24px;border:1.5px solid var(--line);border-radius:100px;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:500;cursor:pointer;text-decoration:none;transition:border-color .2s,background .2s}
+.btn-ghost:hover{border-color:var(--mid);background:white}
+.hero-note{margin-top:18px;font-size:13px;color:var(--muted);display:flex;align-items:center;gap:6px;animation:fadeUp .6s .4s ease both}
+.hero-note svg{width:14px;height:14px;stroke:var(--muted);fill:none}
+
+/* PHONE MOCKUP */
+.hero-visual{position:relative;animation:fadeUp .7s .3s ease both}
+.phone{width:300px;margin:0 auto;background:white;border-radius:38px;border:1px solid rgba(30,26,24,.08);padding:14px;box-shadow:0 40px 90px rgba(30,26,24,.14),0 4px 24px rgba(242,86,122,.08);position:relative}
+.phone-screen{background:var(--cream);border-radius:26px;overflow:hidden;padding:24px 18px 20px}
+.phone-head{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.phone-av{width:34px;height:34px;background:var(--rose-light);border-radius:50%;display:flex;align-items:center;justify-content:center}
+.phone-av svg{width:18px;height:18px;fill:var(--rose)}
+.phone-name{font-size:13px;font-weight:600}
+.phone-status{font-size:10.5px;color:var(--green);display:flex;align-items:center;gap:4px}
+.g-dot{width:5px;height:5px;background:var(--green);border-radius:50%}
+.bubble{border-radius:16px;padding:11px 14px;font-size:13px;line-height:1.5;margin-bottom:9px;max-width:85%}
+.b-buddy{background:white;border-bottom-left-radius:4px;box-shadow:0 1px 6px rgba(30,26,24,.04)}
+.b-user{background:var(--rose);color:white;margin-left:auto;border-bottom-right-radius:4px}
+.memchip{display:inline-flex;align-items:center;gap:5px;background:var(--rose-soft);color:var(--rose-dark);padding:5px 11px;border-radius:100px;font-size:9.5px;font-weight:600;margin-bottom:12px}
+.memchip svg{width:9px;height:9px;fill:var(--rose)}
+.float-card{position:absolute;background:white;border:1px solid rgba(30,26,24,.06);border-radius:14px;padding:10px 14px;box-shadow:0 10px 30px rgba(30,26,24,.1);display:flex;align-items:center;gap:9px}
+.float-card.fl{left:-46px;top:60px;animation:floatY 4s ease-in-out infinite}
+.float-card.fr{right:-40px;bottom:70px;animation:floatY 4s 2s ease-in-out infinite}
+@keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.fc-icon{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px}
+.fc-icon.g{background:var(--green-light)}.fc-icon.r{background:var(--rose-light)}
+.fc-title{font-size:11.5px;font-weight:600;color:var(--dark)}
+.fc-sub{font-size:9.5px;color:var(--muted)}
+
+/* PAIN */
+.pain{background:var(--dark);padding:88px 5%}
+.pain-inner{max-width:980px;margin:0 auto}
+.section-label{font-size:12.5px;font-weight:500;letter-spacing:1.6px;text-transform:uppercase;color:var(--rose);margin-bottom:16px}
+.pain h2{font-family:'Fraunces',serif;font-size:clamp(28px,3.6vw,42px);font-weight:400;color:white;line-height:1.2;margin-bottom:44px}
+.pain h2 em{font-style:italic;color:var(--rose)}
+.pain-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+.pain-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:20px;padding:26px}
+.pain-quote{font-family:'Fraunces',serif;font-size:15.5px;font-style:italic;color:rgba(255,255,255,.85);line-height:1.65;margin-bottom:14px;border-left:3px solid var(--rose);padding-left:14px}
+.pain-src{font-size:11px;color:rgba(255,255,255,.32)}
+
+/* HOW IT WORKS — signature scroll section */
+.how{padding:100px 5%;max-width:1080px;margin:0 auto}
+.how .section-label{text-align:center}
+.how h2{font-family:'Fraunces',serif;font-size:clamp(28px,3.6vw,42px);font-weight:400;text-align:center;margin-bottom:64px;line-height:1.2}
+.how h2 em{font-style:italic;color:var(--rose)}
+.flow{display:flex;flex-direction:column;gap:0}
+.flow-step{display:grid;grid-template-columns:64px 1fr;gap:26px;padding:32px 0;position:relative}
+.flow-step:not(:last-child)::after{content:'';position:absolute;left:31px;top:76px;bottom:-32px;width:1.5px;background:linear-gradient(180deg,var(--rose),var(--line))}
+.flow-num{width:64px;height:64px;border-radius:50%;background:var(--rose-light);border:1.5px solid var(--rose);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:22px;color:var(--rose);flex-shrink:0;z-index:1}
+.flow-content h3{font-size:19px;font-weight:600;margin-bottom:8px;padding-top:12px}
+.flow-content p{font-size:15.5px;color:var(--mid);line-height:1.7;max-width:520px}
+
+/* FEATURES */
+.features{background:var(--sand);padding:96px 5%}
+.features-inner{max-width:1100px;margin:0 auto}
+.features-inner .section-label{text-align:center}
+.features-inner h2{font-family:'Fraunces',serif;font-size:clamp(26px,3.6vw,42px);font-weight:400;text-align:center;margin-bottom:52px;line-height:1.2}
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px}
+.feat-card{background:white;border-radius:22px;padding:30px;border:1px solid rgba(30,26,24,.06);transition:transform .2s,box-shadow .2s}
+.feat-card:hover{transform:translateY(-4px);box-shadow:0 20px 50px rgba(30,26,24,.06)}
+.feat-icon{width:50px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:18px}
+.fi-r{background:var(--rose-light)}.fi-g{background:var(--green-light)}.fi-s{background:var(--sand);border:1px solid rgba(30,26,24,.06)}
+.feat-card h3{font-size:17.5px;font-weight:600;margin-bottom:9px}
+.feat-card p{font-size:14.5px;color:var(--mid);line-height:1.7;font-weight:300}
+.feat-tag{display:inline-block;margin-top:13px;background:var(--rose-light);color:var(--rose-dark);padding:4px 12px;border-radius:100px;font-size:11px;font-weight:600}
+
+/* PRICE */
+.price{padding:100px 5%;max-width:900px;margin:0 auto;text-align:center}
+.price .section-label{text-align:center}
+.price h2{font-family:'Fraunces',serif;font-size:clamp(26px,3.6vw,42px);font-weight:400;line-height:1.2;margin-bottom:14px}
+.price h2 em{font-style:italic;color:var(--rose)}
+.price>p{font-size:16.5px;color:var(--mid);font-weight:300;margin-bottom:52px}
+.price-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;text-align:left}
+.price-card{background:white;border:1.5px solid var(--line);border-radius:24px;padding:34px}
+.price-card.featured{border-color:var(--rose);position:relative;box-shadow:0 20px 50px rgba(242,86,122,.12)}
+.price-badge{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--rose);color:white;font-size:12px;font-weight:600;padding:5px 16px;border-radius:100px;white-space:nowrap}
+.price-name{font-size:15px;font-weight:600;color:var(--muted);margin-bottom:10px}
+.price-amount{font-family:'Fraunces',serif;font-size:40px;font-weight:400;margin-bottom:4px}
+.price-amount span{font-size:16px;color:var(--muted);font-weight:400}
+.price-desc{font-size:13.5px;color:var(--mid);margin-bottom:24px}
+.price-list{display:flex;flex-direction:column;gap:12px;margin-bottom:28px}
+.price-item{display:flex;align-items:flex-start;gap:10px;font-size:14.5px;color:var(--dark)}
+.price-item svg{width:18px;height:18px;stroke:var(--green);fill:none;stroke-width:2.4;flex-shrink:0;margin-top:1px}
+.price-item.muted{color:var(--muted)}
+.price-item.muted svg{stroke:var(--muted)}
+.price-btn{display:block;text-align:center;width:100%;padding:14px;border-radius:100px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;text-decoration:none;transition:background .2s,transform .15s}
+.price-btn.dark{background:var(--dark);color:white}
+.price-btn.dark:hover{background:#000;transform:translateY(-2px)}
+.price-btn.outline{background:transparent;color:var(--dark);border:1.5px solid var(--line)}
+.price-btn.outline:hover{border-color:var(--mid)}
+
+/* TESTIMONIALS */
+.testi{padding:96px 5%;max-width:1000px;margin:0 auto;text-align:center}
+.testi .section-label{text-align:center}
+.testi h2{font-family:'Fraunces',serif;font-size:clamp(24px,3.4vw,38px);font-weight:400;line-height:1.2;margin-bottom:44px}
+.testi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;text-align:left}
+.testi-card{background:white;border-radius:20px;padding:26px;border:1px solid rgba(30,26,24,.06)}
+.t-stars{color:#F5A623;font-size:14px;margin-bottom:12px}
+.t-text{font-family:'Fraunces',serif;font-size:15.5px;font-style:italic;color:var(--dark);line-height:1.6;margin-bottom:16px}
+.t-author{display:flex;align-items:center;gap:10px}
+.t-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:var(--rose-dark);background:var(--rose-light);flex-shrink:0}
+.t-name{font-size:13px;font-weight:600}
+.t-meta{font-size:12px;color:var(--muted)}
+
+/* FINAL CTA */
+.cta-section{background:var(--rose);padding:100px 5%;text-align:center;position:relative;overflow:hidden}
+.cta-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(255,255,255,.15) 0%,transparent 60%);pointer-events:none}
+.cta-section h2{font-family:'Fraunces',serif;font-size:clamp(30px,4.6vw,50px);font-weight:400;color:white;line-height:1.2;margin-bottom:16px;position:relative}
+.cta-section h2 em{font-style:italic;opacity:.85}
+.cta-section>p{font-size:18px;color:rgba(255,255,255,.82);font-weight:300;margin-bottom:38px;position:relative;max-width:480px;margin-left:auto;margin-right:auto}
+.cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;position:relative}
+.btn-white{background:white;color:var(--rose-dark);padding:17px 32px;border:none;border-radius:100px;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:transform .15s,box-shadow .15s}
+.btn-white:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(0,0,0,.2)}
+.cta-note{margin-top:22px;font-size:13.5px;color:rgba(255,255,255,.65);position:relative}
+
+/* FOOTER */
+footer{padding:44px 5%;text-align:center;font-size:13px;color:var(--muted);border-top:1px solid var(--line)}
+footer a{color:var(--rose);text-decoration:none}
+.foot-tag{margin-bottom:10px;font-size:14px;color:var(--mid)}
+
+/* ANIM */
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* RESPONSIVE */
+@media(max-width:860px){
+  .hero{grid-template-columns:1fr;padding:120px 5% 60px;gap:44px}
+  .hero-visual{order:-1}
+  .phone{width:260px}
+  .float-card.fl{left:-14px}
+  .float-card.fr{right:-14px}
+  .flow-step{grid-template-columns:52px 1fr;gap:18px}
+  .flow-num{width:52px;height:52px;font-size:18px}
+  .flow-step:not(:last-child)::after{left:25px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="logo" aria-label="MamaBuddy">
+    <svg width="180" height="40" viewBox="0 0 240 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="26" cy="26" r="22" stroke="#F2567A" stroke-width="2.8"/>
+      <path d="M26 38C26 38 15 30.5 15 21.5C15 17.9 17.9 15 21.5 15C23.4 15 25.1 15.8 26 17.1C26.9 15.8 28.6 15 30.5 15C34.1 15 37 17.9 37 21.5C37 30.5 26 38 26 38Z" fill="#F2567A"/>
+      <text x="60" y="34" font-family="Fraunces,serif" font-size="26" font-weight="600" fill="#1E2640">MamaBuddy</text>
+    </svg>
+  </a>
+  <a href="#" class="nav-cta">Probeer gratis →</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div>
+    <div class="hero-tag"><span class="dot"></span>Nu beschikbaar — gratis te proberen</div>
+    <h1>Jij bent <em>meer</em><br>dan alleen mama.</h1>
+    <p class="hero-sub">MamaBuddy is jouw persoonlijke Buddy. Voor de momenten dat het zwaar voelt, je hoofd vol zit, en je gewoon even iemand nodig hebt die begrijpt wat moederschap echt vraagt.</p>
+    <div class="hero-ctas">
+      <a href="#" class="btn-primary">Start gratis met Buddy →</a>
+      <a href="#hoe" class="btn-ghost">Hoe het werkt</a>
+    </div>
+    <p class="hero-note">
+      <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      Geen creditcard nodig · privé & versleuteld · opgeslagen in Europa
+    </p>
+  </div>
+
+  <div class="hero-visual">
+    <div class="phone">
+      <div class="phone-screen">
+        <div class="phone-head">
+          <div class="phone-av"><svg viewBox="0 0 20 18"><path d="M10 16.5S1 11 1 5a4 4 0 0 1 8-1 1 1 0 0 0 2 0 4 4 0 0 1 8 1c0 6-9 11.5-9 11.5z"/></svg></div>
+          <div>
+            <div class="phone-name">Buddy</div>
+            <div class="phone-status"><span class="g-dot"></span>altijd beschikbaar</div>
+          </div>
+        </div>
+        <div class="memchip"><svg viewBox="0 0 20 18"><path d="M10 16.5S1 11 1 5a4 4 0 0 1 8-1 1 1 0 0 0 2 0 4 4 0 0 1 8 1c0 6-9 11.5-9 11.5z"/></svg>Buddy herinnert zich jullie gesprek</div>
+        <div class="bubble b-buddy">Hé 👋 Hoe voel jij je vandaag écht?</div>
+        <div class="bubble b-user">Eerlijk? Uitgeput. En ik voel me schuldig dat ik geïrriteerd was 😔</div>
+        <div class="bubble b-buddy">Dat je geïrriteerd was betekent niet dat je faalt — het betekent dat je moe bent. Dat is een signaal, geen falen. 💛</div>
+      </div>
+    </div>
+    <div class="float-card fl">
+      <div class="fc-icon g">💬</div>
+      <div><div class="fc-title">24/7 beschikbaar</div><div class="fc-sub">altijd iemand die luistert</div></div>
+    </div>
+    <div class="float-card fr">
+      <div class="fc-icon r">🧠</div>
+      <div><div class="fc-title">Onthoudt jou</div><div class="fc-sub">geen dossier, wel vertrouwen</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PAIN -->
+<section class="pain">
+  <div class="pain-inner">
+    <div class="section-label">Herken jij dit?</div>
+    <h2>Moeders staan <em>altijd aan.</em></h2>
+    <div class="pain-grid">
+      <div class="pain-card reveal">
+        <p class="pain-quote">"Ik weet niet meer waar ik eindig en de mama begint."</p>
+        <p class="pain-src">— Staat van Gezinnen 2025</p>
+      </div>
+      <div class="pain-card reveal">
+        <p class="pain-quote">"9 op de 10 moeders ervaren dagelijks stress. 1 op de 12 krijgt een mama burn-out."</p>
+        <p class="pain-src">— Onderzoek 2025</p>
+      </div>
+      <div class="pain-card reveal">
+        <p class="pain-quote">"Er zijn apps voor je baby. Maar wie denkt er aan jou?"</p>
+        <p class="pain-src">— MamaBuddy</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS (signature flow) -->
+<section class="how" id="hoe">
+  <div class="section-label">Hoe het werkt</div>
+  <h2>Jouw Buddy. Elke dag. <em>Echt voor jou.</em></h2>
+  <div class="flow">
+    <div class="flow-step reveal">
+      <div class="flow-num">1</div>
+      <div class="flow-content">
+        <h3>Dagelijkse check-in</h3>
+        <p>Elke ochtend 2 minuten. Buddy vraagt hoe je erbij staat. Niet als formulier — als een gesprek dat écht iets vraagt.</p>
+      </div>
+    </div>
+    <div class="flow-step reveal">
+      <div class="flow-num">2</div>
+      <div class="flow-content">
+        <h3>Buddy leert je kennen</h3>
+        <p>Elk gesprek bouwt verder op het vorige. Buddy onthoudt wat er speelt, zodat jij het niet steeds opnieuw hoeft uit te leggen.</p>
+      </div>
+    </div>
+    <div class="flow-step reveal">
+      <div class="flow-num">3</div>
+      <div class="flow-content">
+        <h3>Leg je hoofd leeg</h3>
+        <p>Alle lijstjes die rondspoken — gymschoenen, tandarts, cadeaus — zet je in Mijn Hoofd. Dat alleen al geeft rust.</p>
+      </div>
+    </div>
+    <div class="flow-step reveal">
+      <div class="flow-num">4</div>
+      <div class="flow-content">
+        <h3>Jij krijgt energie terug</h3>
+        <p>Praktische inzichten, oprechte erkenning, en het gevoel dat je er niet alleen voor staat — elke dag een beetje meer.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features">
+  <div class="features-inner">
+    <div class="section-label">Wat je krijgt</div>
+    <h2>Gebouwd voor <em style="font-style:italic;font-family:'Fraunces',serif">echte</em> moeders</h2>
+    <div class="feat-grid">
+      <div class="feat-card reveal"><div class="feat-icon fi-r">💛</div><h3>Buddy, jouw coach als mama</h3><p>Niet alleen over je kind. Over hoe jij het doet. Schuldgevoelens, vermoeidheid, relatie — Buddy begrijpt het allemaal.</p><span class="feat-tag">Kern feature</span></div>
+      <div class="feat-card reveal"><div class="feat-icon fi-g">🧠</div><h3>Onthoudt wat er speelt</h3><p>Buddy bouwt een beeld op van jouw situatie. Jij bepaalt wat hij onthoudt — en kunt het altijd inzien of wissen.</p></div>
+      <div class="feat-card reveal"><div class="feat-icon fi-r">✓</div><h3>Mijn Hoofd — mental load ontladen</h3><p>Zet alle rondspokende lijstjes ergens neer. Buddy helpt ordenen en herinnert je eraan.</p><span class="feat-tag">Alleen bij MamaBuddy</span></div>
+      <div class="feat-card reveal"><div class="feat-icon fi-s">📋</div><h3>Toeslagen & regelingen checker</h3><p>Kinderopvangtoeslag, verlofregels — in gewone taal. Speciaal voor Nederland en België.</p></div>
+      <div class="feat-card reveal"><div class="feat-icon fi-g">⚡</div><h3>24/7 beschikbaar</h3><p>Om 3 uur 's nachts, in de pauze, op de wc — Buddy is er altijd. Geen wachttijd, geen afspraken.</p></div>
+      <div class="feat-card reveal"><div class="feat-icon fi-r">🔒</div><h3>Privé & veilig</h3><p>Versleuteld, opgeslagen in Europa, nooit gedeeld. Jij bepaalt wat je deelt en kunt alles wissen.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICE -->
+<section class="price">
+  <div class="section-label">Prijzen</div>
+  <h2>Begin gratis. <em>Groei mee</em> als je meer nodig hebt.</h2>
+  <p>Geen verrassingen, geen verborgen kosten. Zeg op wanneer je wilt.</p>
+  <div class="price-grid">
+    <div class="price-card reveal">
+      <div class="price-name">Gratis</div>
+      <div class="price-amount">€0<span>/maand</span></div>
+      <div class="price-desc">Om te voelen of Buddy bij je past.</div>
+      <div class="price-list">
+        <div class="price-item"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>Dagelijkse check-in, onbeperkt</div>
+        <div class="price-item"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>3 chatberichten per dag</div>
+        <div class="price-item"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>Mijn Hoofd — mental load lijst</div>
+        <div class="price-item muted"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>Onbeperkt chatten</div>
+        <div class="price-item muted"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>Buddy's volledige geheugen</div>
+      </div>
+      <a href="#" class="price-btn outline">Start gratis</a>
+    </div>
+    <div class="price-card featured reveal">
+      <div class="price-badge">Meest gekozen</div>
+      <div class="price-name">Premium</div>
+      <div class="price-amount">€7,99<span>/maand</span></div>
+      <div class="price-desc">Voor als je Buddy echt wilt leren kennen.</div>
+      <div class="price-list">
+        <div class="price-item"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>Onbeperkt chatten met Buddy</div>
+        <div class="price-item"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>Buddy's volledige geheugen & inzichten</div>
+        <div class="price-item"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>Wekelijks persoonlijk overzicht</div>
+        <div class="price-item"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>Toeslagen & regelingen checker</div>
+        <div class="price-item"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>Altijd maandelijks opzegbaar</div>
+      </div>
+      <a href="#" class="price-btn dark">Start met Premium</a>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testi">
+  <div class="section-label">Wat moeders zeggen</div>
+  <h2>Echte verhalen van<br>echte moeders</h2>
+  <div class="testi-grid">
+    <div class="testi-card reveal">
+      <div class="t-stars">★★★★★</div>
+      <p class="t-text">"Eindelijk een app die niet over het kind gaat, maar over mij. Ik had tranen in mijn ogen bij het eerste gesprek."</p>
+      <div class="t-author"><div class="t-avatar">SV</div><div><div class="t-name">Sophie V.</div><div class="t-meta">Moeder van 2, Utrecht</div></div></div>
+    </div>
+    <div class="testi-card reveal">
+      <div class="t-stars">★★★★★</div>
+      <p class="t-text">"Buddy voelt niet als een chatbot. Het voelt als die vriendin die altijd beschikbaar is en nooit oordeelt."</p>
+      <div class="t-author"><div class="t-avatar">NB</div><div><div class="t-name">Nathalie B.</div><div class="t-meta">Moeder van 3, Antwerpen</div></div></div>
+    </div>
+    <div class="testi-card reveal">
+      <div class="t-stars">★★★★★</div>
+      <p class="t-text">"Mijn Hoofd alleen al was het waard. Ik heb voor het eerst in maanden geen lijstjes meer in mijn hoofd rondspoken."</p>
+      <div class="t-author"><div class="t-avatar">AK</div><div><div class="t-name">Ayşe K.</div><div class="t-meta">Moeder van 1, Amsterdam</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="cta-section">
+  <h2>Klaar om <em>eindelijk</em><br>voor jezelf te kiezen?</h2>
+  <p>Start vandaag nog een gesprek met Buddy. Gratis, geen creditcard nodig, direct beschikbaar.</p>
+  <div class="cta-btns">
+    <a href="#" class="btn-white">Start gratis met Buddy →</a>
+  </div>
+  <p class="cta-note">Duurt minder dan een minuut om te beginnen</p>
+</section>
+
+<footer>
+  <p class="foot-tag">Jouw Buddy. Altijd beschikbaar.</p>
+  <p style="margin-bottom:8px">
+    <a href="#">Privacy</a> &nbsp;·&nbsp; <a href="#">Voorwaarden</a> &nbsp;·&nbsp; <a href="mailto:hallo@mamabuddy.nl">hallo@mamabuddy.nl</a>
+  </p>
+  <p>© 2026 MamaBuddy · Gemaakt met ❤️ in Nederland</p>
+</footer>
+
+<script>
+const io=new IntersectionObserver(entries=>{
+  entries.forEach(el=>{if(el.isIntersecting){el.target.classList.add('visible');io.unobserve(el.target)}});
+},{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>

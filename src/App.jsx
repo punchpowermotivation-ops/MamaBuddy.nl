@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import Landing from './pages/Landing';
 import Welcome from './pages/Welcome';
 import Onboarding from './pages/Onboarding';
 import Home from './pages/Home';
@@ -21,7 +22,7 @@ function AppGate({ children }) {
   const { session, profile, loading } = useAuth();
 
   if (loading) return <Splash />;
-  if (!session) return <Welcome />;
+  if (!session) return <Landing />;
   if (!profile?.onboarding_done) return <Onboarding />;
   return children;
 }
@@ -31,6 +32,13 @@ function RequireOnboardingSession() {
   if (loading) return <Splash />;
   if (!session) return <Navigate to="/" replace />;
   return <Onboarding />;
+}
+
+function WelcomeRoute() {
+  const { session, loading } = useAuth();
+  if (loading) return <Splash />;
+  if (session) return <Navigate to="/" replace />;
+  return <Welcome />;
 }
 
 export default function App() {
@@ -70,6 +78,7 @@ export default function App() {
             }
           />
           <Route path="/onboarding" element={<RequireOnboardingSession />} />
+          <Route path="/welkom" element={<WelcomeRoute />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>
