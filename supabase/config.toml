@@ -7,3 +7,7 @@ content_path = "./supabase/templates/magic_link.html"
 [auth.email.template.confirmation]
 subject = "Welkom bij MamaBuddy 💛 — bevestig je e-mailadres"
 content_path = "./supabase/templates/confirm_signup.html"
+
+[auth.email.template.email_change]
+subject = "Bevestig je nieuwe e-mailadres bij MamaBuddy"
+content_path = "./supabase/templates/change_email.html"
