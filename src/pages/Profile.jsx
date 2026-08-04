@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import PaywallModal from '../components/PaywallModal';
+import FeedbackModal from '../components/FeedbackModal';
 
 export default function Profile() {
   const { profile, signOut } = useAuth();
@@ -12,6 +13,7 @@ export default function Profile() {
   const [editingId, setEditingId] = useState(null);
   const [editValue, setEditValue] = useState('');
   const [paywallOpen, setPaywallOpen] = useState(false);
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
 
   useEffect(() => {
     if (!profile) return;
@@ -168,6 +170,18 @@ export default function Profile() {
             </svg>
           </div>
         ))}
+        <div
+          onClick={() => setFeedbackOpen(true)}
+          className="px-5 py-4 flex items-center gap-3.5 border-t border-line cursor-pointer"
+        >
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#5C4F47" strokeWidth="2" className="flex-shrink-0">
+            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+          </svg>
+          <span className="flex-1 text-[14.5px] text-ink">Feedback of bug melden</span>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#9B8F88" strokeWidth="2">
+            <path d="M9 18l6-6-6-6" />
+          </svg>
+        </div>
       </div>
 
       <div className="text-center pb-4">
@@ -180,6 +194,7 @@ export default function Profile() {
       </div>
 
       <PaywallModal open={paywallOpen} onClose={() => setPaywallOpen(false)} />
+      <FeedbackModal open={feedbackOpen} onClose={() => setFeedbackOpen(false)} />
     </div>
   );
 }
