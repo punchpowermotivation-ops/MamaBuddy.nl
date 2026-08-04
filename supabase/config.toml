@@ -3,3 +3,7 @@ project_id = "xwgufntboxulorplikwe"
 [auth.email.template.magic_link]
 subject = "Jouw MamaBuddy inloglink 💛"
 content_path = "./supabase/templates/magic_link.html"
+
+[auth.email.template.confirmation]
+subject = "Welkom bij MamaBuddy 💛 — bevestig je e-mailadres"
+content_path = "./supabase/templates/confirm_signup.html"
