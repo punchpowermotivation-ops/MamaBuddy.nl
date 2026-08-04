@@ -4,9 +4,11 @@ import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import PaywallModal from '../components/PaywallModal';
 import FeedbackModal from '../components/FeedbackModal';
+import { ADMIN_EMAIL } from '../lib/constants';
 
 export default function Profile() {
   const { profile, signOut } = useAuth();
+  const isAdmin = profile?.email?.toLowerCase() === ADMIN_EMAIL;
   const navigate = useNavigate();
   const [memories, setMemories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -183,6 +185,23 @@ export default function Profile() {
           </svg>
         </div>
       </div>
+
+      {isAdmin && (
+        <div className="mx-5 mb-6 bg-navy border border-navy rounded-[20px] overflow-hidden">
+          <div
+            onClick={() => navigate('/admin')}
+            className="px-5 py-4 flex items-center gap-3.5 cursor-pointer"
+          >
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#fff" strokeWidth="2" className="flex-shrink-0">
+              <path d="M12 2 3 7v6c0 5 4 8.5 9 9 5-.5 9-4 9-9V7l-9-5z" />
+            </svg>
+            <span className="flex-1 text-[14.5px] text-white font-medium">Admin dashboard</span>
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="rgba(255,255,255,.6)" strokeWidth="2">
+              <path d="M9 18l6-6-6-6" />
+            </svg>
+          </div>
+        </div>
+      )}
 
       <div className="text-center pb-4">
         <button

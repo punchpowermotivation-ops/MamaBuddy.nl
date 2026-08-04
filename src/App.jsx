@@ -11,8 +11,7 @@ import CheckIn from './pages/CheckIn';
 import Toeslagen from './pages/Toeslagen';
 import Admin from './pages/Admin';
 import AppLayout from './components/AppLayout';
-
-const ADMIN_EMAIL = 'punchpowermotivation@gmail.com';
+import { ADMIN_EMAIL } from './lib/constants';
 
 function Splash() {
   return (
