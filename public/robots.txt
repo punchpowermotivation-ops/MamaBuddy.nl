@@ -9,6 +9,9 @@ Disallow: /profiel
 Disallow: /check-in
 Disallow: /toeslagen
 Disallow: /admin
+Disallow: /meldingen
+Disallow: /privacy-data
+Disallow: /hulp-contact
 
 # Sta AI-crawlers expliciet toe op de publieke landingpagina
 User-agent: GPTBot

@@ -546,13 +546,13 @@ export default function Landing() {
       <footer className="px-[5%] py-11 text-center text-[13px] text-muted border-t border-line">
         <p className="mb-2.5 text-sm text-mid">Jouw Buddy. Altijd beschikbaar.</p>
         <p className="mb-2">
-          <a href="#" className="text-rose no-underline">
+          <Link to="/privacybeleid" className="text-rose no-underline">
             Privacy
-          </a>{' '}
+          </Link>{' '}
           &nbsp;·&nbsp;{' '}
-          <a href="#" className="text-rose no-underline">
+          <Link to="/voorwaarden" className="text-rose no-underline">
             Voorwaarden
-          </a>{' '}
+          </Link>{' '}
           &nbsp;·&nbsp;{' '}
           <a href="mailto:mamabuddynl@gmail.com" className="text-rose no-underline">
             mamabuddynl@gmail.com

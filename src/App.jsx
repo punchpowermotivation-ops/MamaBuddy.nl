@@ -10,6 +10,11 @@ import Profile from './pages/Profile';
 import CheckIn from './pages/CheckIn';
 import Toeslagen from './pages/Toeslagen';
 import Admin from './pages/Admin';
+import Meldingen from './pages/Meldingen';
+import PrivacyData from './pages/PrivacyData';
+import HulpContact from './pages/HulpContact';
+import Privacybeleid from './pages/Privacybeleid';
+import Voorwaarden from './pages/Voorwaarden';
 import AppLayout from './components/AppLayout';
 import { ADMIN_EMAIL } from './lib/constants';
 
@@ -96,9 +101,36 @@ export default function App() {
               </AppGate>
             }
           />
+          <Route
+            path="/meldingen"
+            element={
+              <AppGate>
+                <Meldingen />
+              </AppGate>
+            }
+          />
+          <Route
+            path="/privacy-data"
+            element={
+              <AppGate>
+                <PrivacyData />
+              </AppGate>
+            }
+          />
+          <Route
+            path="/hulp-contact"
+            element={
+              <AppGate>
+                <HulpContact />
+              </AppGate>
+            }
+          />
           <Route path="/onboarding" element={<RequireOnboardingSession />} />
           <Route path="/welkom" element={<WelcomeRoute />} />
           <Route path="/admin" element={<AdminGate />} />
+          {/* Publieke juridische pagina's — altijd bereikbaar, ook uitgelogd. */}
+          <Route path="/privacybeleid" element={<Privacybeleid />} />
+          <Route path="/voorwaarden" element={<Voorwaarden />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

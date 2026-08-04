@@ -161,9 +161,14 @@ export default function Profile() {
       </div>
 
       <div className="mx-5 mb-6 bg-white border border-line rounded-[20px] overflow-hidden">
-        {['Meldingen', 'Privacy & data', 'Hulp & contact'].map((label) => (
+        {[
+          ['Meldingen', '/meldingen'],
+          ['Privacy & data', '/privacy-data'],
+          ['Hulp & contact', '/hulp-contact'],
+        ].map(([label, path]) => (
           <div
             key={label}
+            onClick={() => navigate(path)}
             className="px-5 py-4 flex items-center gap-3.5 border-b border-line last:border-b-0 cursor-pointer"
           >
             <span className="flex-1 text-[14.5px] text-ink">{label}</span>
