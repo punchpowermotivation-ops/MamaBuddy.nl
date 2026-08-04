@@ -15,11 +15,17 @@ export default function AppFrame({ children }) {
   const { session, loading } = useAuth();
   const location = useLocation();
 
-  const isLoggedOutLanding = location.pathname === '/' && !session && !loading;
+  // AppGate falls back to rendering <Landing/> for *any* of its wrapped
+  // routes when there's no session (not just "/") — so this has to check
+  // "will Landing render here", not just the exact path, or visiting an
+  // AppGate route like /betaling-gelukt while logged out stuffs Landing's
+  // full-width marketing layout into the 420px phone-card. /welkom is the
+  // one logged-out route that's genuinely supposed to be a phone screen.
+  const isLoggedOutFallback = !loading && !session && location.pathname !== '/welkom';
   const isAdmin = location.pathname.startsWith('/admin');
   const isFullWidthPage = FULL_WIDTH_PATHS.includes(location.pathname);
 
-  if (isLoggedOutLanding || isAdmin || isFullWidthPage) {
+  if (isLoggedOutFallback || isAdmin || isFullWidthPage) {
     return children;
   }
 
