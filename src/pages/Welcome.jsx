@@ -153,7 +153,7 @@ export default function Welcome() {
   }
 
   return (
-    <div className="app-shell flex flex-col relative bg-gradient-to-br from-navy to-[#14110f] pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
+    <div className="app-shell theme-dark flex flex-col relative bg-gradient-to-br from-navy to-[#14110f] pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
       <div className="flex-1 flex flex-col justify-center px-8 relative z-10">
         <div className="mb-11">
           <Logo variant="dark" />

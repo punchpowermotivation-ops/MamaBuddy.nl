@@ -66,7 +66,7 @@ export default function CheckIn() {
   const progress = step === STEPS.MOOD ? '33%' : step === STEPS.NOTE ? '66%' : '100%';
 
   return (
-    <div className="app-shell bg-gradient-to-br from-navy to-[#14110f] flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
+    <div className="app-shell theme-dark bg-gradient-to-br from-navy to-[#14110f] flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
       <div className="px-6 py-4 flex items-center gap-4">
         <button
           onClick={() => navigate('/')}

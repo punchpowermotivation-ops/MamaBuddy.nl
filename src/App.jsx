@@ -16,6 +16,7 @@ import HulpContact from './pages/HulpContact';
 import Privacybeleid from './pages/Privacybeleid';
 import Voorwaarden from './pages/Voorwaarden';
 import AppLayout from './components/AppLayout';
+import DesktopMarketingPanel from './components/DesktopMarketingPanel';
 import { ADMIN_EMAIL } from './lib/constants';
 
 function Splash() {
@@ -61,6 +62,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
+        <DesktopMarketingPanel />
         <Routes>
           <Route
             path="/"

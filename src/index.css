@@ -199,40 +199,84 @@ body {
    desktop window looks broken, not "responsive" — cards spanning 1800px,
    a tab bar with four icons scattered across the screen. Instead, above
    a tablet-ish breakpoint the app is presented as a centered, framed
-   column at its natural phone width, the same pattern most mobile-first
-   PWAs use on desktop (Superhuman, Notion's mobile web, banking apps).
-   Landing.jsx is untouched — it already has its own desktop-first
-   responsive layout and covers the full viewport, so nothing shows
-   through around it. */
+   *card*: rounded corners, real vertical margin so all four corners are
+   visible, and a soft shadow — the same pattern most mobile-first PWAs
+   use on desktop (Notion's mobile web, Linear, banking apps), not a
+   phone screen accidentally stretched into empty white space.
+   Landing.jsx, Admin.jsx, and the legal pages are untouched — they
+   already have their own desktop-first layouts covering the full
+   viewport width. .theme-dark is a marker class added directly to the
+   handful of screens that use the navy gradient (Welcome's first step,
+   Onboarding's name step, Check-in) so the page background behind the
+   card can match instead of clashing with a light gradient. */
 @media (min-width: 768px) {
   body {
-    background: #ebe2d5;
+    background: linear-gradient(160deg, #fdf8f3 0%, #f5ede4 100%);
+  }
+
+  body:has(.theme-dark) {
+    background: radial-gradient(ellipse at top, #2d3654 0%, #14110f 100%);
   }
 
   .app-shell,
-  .app-page {
+  .app-page,
+  .chat-screen {
     max-width: 480px;
-    min-height: 100vh;
-    margin: 0 auto;
+    margin: 32px auto;
+    min-height: calc(100vh - 64px);
+    border-radius: 32px;
+    overflow: hidden;
     box-shadow:
-      0 0 0 1px rgba(30, 26, 24, 0.06),
-      0 30px 70px rgba(30, 26, 24, 0.16);
+      0 0 60px rgba(30, 26, 24, 0.08),
+      0 30px 70px rgba(30, 26, 24, 0.14);
   }
 
   .chat-screen {
+    position: fixed;
+    top: 32px;
+    bottom: 32px;
     left: 50%;
     right: auto;
     width: 480px;
+    height: calc(100vh - 64px);
     transform: translateX(-50%);
-    box-shadow:
-      0 0 0 1px rgba(30, 26, 24, 0.06),
-      0 30px 70px rgba(30, 26, 24, 0.16);
   }
 
   .app-tabbar {
     left: 50%;
     right: auto;
+    bottom: 32px;
     width: 480px;
     transform: translateX(-50%);
+    border-radius: 20px;
+  }
+}
+
+/* ═══ DESKTOP MARKETING PANEL ═══
+   Fills the empty gutter beside the framed app card on wide windows
+   with a static, on-brand message instead of leaving it blank — mainly
+   for anyone who opens a shared MamaBuddy link on a laptop. Purely
+   decorative and fixed-positioned, so it never affects the app card's
+   own centering/layout. Only shown where there's real empty space to
+   fill (DesktopMarketingPanel.jsx hides it on Landing/Admin, which
+   already use the full viewport width). */
+.desktop-marketing-panel {
+  display: none;
+}
+
+@media (min-width: 1180px) {
+  .desktop-marketing-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: min(360px, calc(50vw - 340px));
+    padding: 0 48px;
+    background: linear-gradient(160deg, var(--color-navy) 0%, #14110f 100%);
+    border-radius: 0 32px 32px 0;
   }
 }
