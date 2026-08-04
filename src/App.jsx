@@ -15,6 +15,7 @@ import PrivacyData from './pages/PrivacyData';
 import HulpContact from './pages/HulpContact';
 import Privacybeleid from './pages/Privacybeleid';
 import Voorwaarden from './pages/Voorwaarden';
+import BetalingGelukt from './pages/BetalingGelukt';
 import AppLayout from './components/AppLayout';
 import AppFrame from './components/AppFrame';
 import { ADMIN_EMAIL } from './lib/constants';
@@ -124,6 +125,14 @@ export default function App() {
             element={
               <AppGate>
                 <HulpContact />
+              </AppGate>
+            }
+          />
+          <Route
+            path="/betaling-gelukt"
+            element={
+              <AppGate>
+                <BetalingGelukt />
               </AppGate>
             }
           />

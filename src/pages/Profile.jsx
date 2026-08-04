@@ -6,8 +6,13 @@ import PaywallModal from '../components/PaywallModal';
 import FeedbackModal from '../components/FeedbackModal';
 import { ADMIN_EMAIL } from '../lib/constants';
 
+function formatDate(iso) {
+  if (!iso) return '';
+  return new Date(iso).toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+
 export default function Profile() {
-  const { profile, signOut } = useAuth();
+  const { profile, signOut, refreshProfile } = useAuth();
   const isAdmin = profile?.email?.toLowerCase() === ADMIN_EMAIL;
   const navigate = useNavigate();
   const [memories, setMemories] = useState([]);
@@ -16,6 +21,9 @@ export default function Profile() {
   const [editValue, setEditValue] = useState('');
   const [paywallOpen, setPaywallOpen] = useState(false);
   const [feedbackOpen, setFeedbackOpen] = useState(false);
+  const [cancelConfirming, setCancelConfirming] = useState(false);
+  const [subBusy, setSubBusy] = useState(false);
+  const [subError, setSubError] = useState('');
 
   useEffect(() => {
     if (!profile) return;
@@ -52,6 +60,46 @@ export default function Profile() {
   async function removeMemory(id) {
     setMemories((prev) => prev.filter((m) => m.id !== id));
     await supabase.from('buddy_memory').delete().eq('id', id);
+  }
+
+  async function confirmCancelSubscription() {
+    setSubBusy(true);
+    setSubError('');
+    const { error } = await supabase.functions.invoke('cancel-subscription');
+    setSubBusy(false);
+    setCancelConfirming(false);
+    if (error) {
+      setSubError('Kon het abonnement niet opzeggen. Probeer het nog eens.');
+      return;
+    }
+    await refreshProfile();
+  }
+
+  async function reactivateSubscription() {
+    setSubBusy(true);
+    setSubError('');
+    const { data, error } = await supabase.functions.invoke('create-subscription');
+    if (error || !data?.checkoutUrl) {
+      setSubBusy(false);
+      setSubError('Kon de betaling niet starten. Probeer het nog eens.');
+      return;
+    }
+    window.location.href = data.checkoutUrl;
+  }
+
+  async function updatePaymentMethod() {
+    setSubBusy(true);
+    setSubError('');
+    // Clean up the old (failing) Mollie subscription first so it doesn't
+    // keep retrying in parallel with the fresh one this creates.
+    await supabase.functions.invoke('cancel-subscription');
+    const { data, error } = await supabase.functions.invoke('create-subscription');
+    if (error || !data?.checkoutUrl) {
+      setSubBusy(false);
+      setSubError('Kon de betaling niet starten. Probeer het nog eens.');
+      return;
+    }
+    window.location.href = data.checkoutUrl;
   }
 
   return (
@@ -131,7 +179,7 @@ export default function Profile() {
         )}
       </div>
 
-      {profile?.subscription_status !== 'premium' && (
+      {profile?.subscription_status === 'free' && (
         <div className="mx-5 mb-4 bg-gradient-to-br from-rose to-rose-dark rounded-[22px] p-5.5 relative overflow-hidden">
           <h3 className="font-serif text-xl text-white mb-1.5 relative">
             Ontgrendel Buddy Premium
@@ -144,6 +192,84 @@ export default function Profile() {
             className="bg-white text-rose-dark rounded-full px-6 py-3 text-sm font-semibold border-none cursor-pointer relative"
           >
             Bekijk Premium →
+          </button>
+        </div>
+      )}
+
+      {profile?.subscription_status === 'premium' && !profile?.subscription_cancels_at && (
+        <div className="mx-5 mb-4 bg-white border border-line rounded-[22px] p-5.5">
+          <h3 className="font-serif text-xl text-ink mb-1.5">Premium actief</h3>
+          <p className="text-[13px] text-mid leading-relaxed mb-4">
+            Verlengt automatisch op {formatDate(profile.subscription_until)}.
+          </p>
+          {subError && <p className="text-rose-dark text-[13px] mb-3">{subError}</p>}
+          {cancelConfirming ? (
+            <div className="bg-sand rounded-2xl p-4">
+              <p className="text-[13px] text-ink leading-relaxed mb-3.5">
+                Weet je het zeker? Je Premium blijft actief tot{' '}
+                {formatDate(profile.subscription_until)}, daarna ga je terug naar de gratis
+                versie.
+              </p>
+              <div className="flex gap-2.5">
+                <button
+                  onClick={confirmCancelSubscription}
+                  disabled={subBusy}
+                  className="flex-1 bg-rose-dark text-white rounded-full py-2.5 text-[13px] font-semibold border-none cursor-pointer disabled:opacity-60"
+                >
+                  {subBusy ? 'Bezig…' : 'Ja, opzeggen'}
+                </button>
+                <button
+                  onClick={() => setCancelConfirming(false)}
+                  disabled={subBusy}
+                  className="flex-1 bg-white border border-line text-ink rounded-full py-2.5 text-[13px] font-semibold cursor-pointer disabled:opacity-60"
+                >
+                  Nee, blijf Premium
+                </button>
+              </div>
+            </div>
+          ) : (
+            <button
+              onClick={() => setCancelConfirming(true)}
+              className="text-rose-dark text-[13px] font-semibold bg-transparent border-none cursor-pointer p-0"
+            >
+              Abonnement opzeggen
+            </button>
+          )}
+        </div>
+      )}
+
+      {profile?.subscription_status === 'premium' && profile?.subscription_cancels_at && (
+        <div className="mx-5 mb-4 bg-white border border-line rounded-[22px] p-5.5">
+          <h3 className="font-serif text-xl text-ink mb-1.5">Premium loopt af</h3>
+          <p className="text-[13px] text-mid leading-relaxed mb-4">
+            Loopt af op {formatDate(profile.subscription_cancels_at)} — je bent overgestapt op
+            de gratis versie.
+          </p>
+          {subError && <p className="text-rose-dark text-[13px] mb-3">{subError}</p>}
+          <button
+            onClick={reactivateSubscription}
+            disabled={subBusy}
+            className="bg-rose text-white rounded-full px-6 py-3 text-sm font-semibold border-none cursor-pointer disabled:opacity-60"
+          >
+            {subBusy ? 'Even geduld…' : 'Heractiveren →'}
+          </button>
+        </div>
+      )}
+
+      {profile?.subscription_status === 'payment_failed' && (
+        <div className="mx-5 mb-4 bg-rose-soft border border-rose-light rounded-[22px] p-5.5">
+          <h3 className="font-serif text-lg text-ink mb-1.5">Betaling niet gelukt</h3>
+          <p className="text-[13px] text-mid leading-relaxed mb-4">
+            We konden je betaling niet verwerken. Update je betaalgegevens om Premium te
+            behouden.
+          </p>
+          {subError && <p className="text-rose-dark text-[13px] mb-3">{subError}</p>}
+          <button
+            onClick={updatePaymentMethod}
+            disabled={subBusy}
+            className="bg-rose text-white rounded-full px-6 py-3 text-sm font-semibold border-none cursor-pointer disabled:opacity-60"
+          >
+            {subBusy ? 'Even geduld…' : 'Betaling bijwerken →'}
           </button>
         </div>
       )}

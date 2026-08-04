@@ -1,4 +1,5 @@
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { supabase } from '../lib/supabase';
 
 const FEATURES = [
   'Onbeperkt praten met Buddy',
@@ -8,12 +9,25 @@ const FEATURES = [
 ];
 
 // Shared across every premium-gated spot in the app (chat daily limit,
-// Toeslagen cards, ...) so there's one paywall look and one place to wire
-// up real Mollie checkout later instead of several diverging ad-hoc UIs.
+// Toeslagen cards, ...) so there's one paywall look and one Mollie
+// checkout flow instead of several diverging ad-hoc UIs.
 export default function PaywallModal({ open, onClose }) {
-  const navigate = useNavigate();
+  const [starting, setStarting] = useState(false);
+  const [error, setError] = useState('');
 
   if (!open) return null;
+
+  async function startCheckout() {
+    setStarting(true);
+    setError('');
+    const { data, error: fnError } = await supabase.functions.invoke('create-subscription');
+    if (fnError || !data?.checkoutUrl) {
+      setStarting(false);
+      setError('Kon de betaling niet starten. Probeer het nog eens.');
+      return;
+    }
+    window.location.href = data.checkoutUrl;
+  }
 
   return (
     <div
@@ -54,18 +68,18 @@ export default function PaywallModal({ open, onClose }) {
             </div>
           </div>
         </div>
+        {error && <p className="text-rose-dark text-sm text-center mb-3">{error}</p>}
         <button
-          onClick={() => {
-            onClose();
-            navigate('/profiel');
-          }}
-          className="w-full bg-rose text-white rounded-2xl py-4 font-semibold text-base border-none cursor-pointer"
+          onClick={startCheckout}
+          disabled={starting}
+          className="w-full bg-rose text-white rounded-2xl py-4 font-semibold text-base border-none cursor-pointer disabled:opacity-60"
         >
-          Bekijk Premium →
+          {starting ? 'Even geduld…' : 'Start met Mollie →'}
         </button>
         <button
           onClick={onClose}
-          className="w-full bg-transparent text-muted text-sm py-3 mt-1 border-none cursor-pointer"
+          disabled={starting}
+          className="w-full bg-transparent text-muted text-sm py-3 mt-1 border-none cursor-pointer disabled:opacity-60"
         >
           Niet nu
         </button>
