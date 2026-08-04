@@ -9,7 +9,10 @@ import MentalLoad from './pages/MentalLoad';
 import Profile from './pages/Profile';
 import CheckIn from './pages/CheckIn';
 import Toeslagen from './pages/Toeslagen';
+import Admin from './pages/Admin';
 import AppLayout from './components/AppLayout';
+
+const ADMIN_EMAIL = 'punchpowermotivation@gmail.com';
 
 function Splash() {
   return (
@@ -40,6 +43,14 @@ function WelcomeRoute() {
   if (loading) return <Splash />;
   if (session) return <Navigate to="/" replace />;
   return <Welcome />;
+}
+
+function AdminGate() {
+  const { session, loading } = useAuth();
+  if (loading) return <Splash />;
+  if (!session) return <Navigate to="/welkom" replace />;
+  if (session.user.email?.toLowerCase() !== ADMIN_EMAIL) return <Navigate to="/" replace />;
+  return <Admin />;
 }
 
 export default function App() {
@@ -88,6 +99,7 @@ export default function App() {
           />
           <Route path="/onboarding" element={<RequireOnboardingSession />} />
           <Route path="/welkom" element={<WelcomeRoute />} />
+          <Route path="/admin" element={<AdminGate />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

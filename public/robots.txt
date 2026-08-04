@@ -8,6 +8,7 @@ Disallow: /mijn-hoofd
 Disallow: /profiel
 Disallow: /check-in
 Disallow: /toeslagen
+Disallow: /admin
 
 # Sta AI-crawlers expliciet toe op de publieke landingpagina
 User-agent: GPTBot
