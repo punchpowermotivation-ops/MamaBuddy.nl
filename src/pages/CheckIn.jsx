@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
+import { useAuth } from '../contexts/AuthContext';
 
 const MOODS = [
   { value: 'uitgeput', emoji: '😮‍💨', label: 'Uitgeput' },
@@ -28,6 +29,9 @@ export default function CheckIn() {
   const [note, setNote] = useState('');
   const [reply, setReply] = useState('');
   const [saving, setSaving] = useState(false);
+  const [checkinId, setCheckinId] = useState(null);
+  const [replyVote, setReplyVote] = useState(null);
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   function chooseMood(value) {
@@ -44,7 +48,19 @@ export default function CheckIn() {
     });
 
     setReply(error || !data?.reply ? FALLBACK_RESPONSES[mood] : data.reply);
+    setCheckinId(data?.checkinId ?? null);
     setSaving(false);
+  }
+
+  async function voteOnReply(rating) {
+    if (replyVote || !checkinId) return;
+    setReplyVote(rating);
+    await supabase.from('feedback_signals').insert({
+      user_id: user.id,
+      context: 'checkin_reactie',
+      rating,
+      related_id: checkinId,
+    });
   }
 
   const progress = step === STEPS.MOOD ? '33%' : step === STEPS.NOTE ? '66%' : '100%';
@@ -134,7 +150,31 @@ export default function CheckIn() {
                 <span className="typing-dot w-2 h-2 bg-white/50 rounded-full" style={{ animationDelay: '300ms' }} />
               </div>
             ) : (
-              <div className="font-serif text-[22px] text-white leading-relaxed mb-8">{reply}</div>
+              <>
+                <div className="font-serif text-[22px] text-white leading-relaxed mb-5">{reply}</div>
+                <div className="h-8 mb-6 flex items-center justify-center">
+                  {replyVote ? (
+                    <span className="text-sm text-white/50">Bedankt 💛</span>
+                  ) : (
+                    <div className="flex gap-3">
+                      <button
+                        onClick={() => voteOnReply(1)}
+                        aria-label="Vond ik fijn"
+                        className="w-9 h-9 rounded-full bg-white/8 border-none text-lg flex items-center justify-center cursor-pointer"
+                      >
+                        👍
+                      </button>
+                      <button
+                        onClick={() => voteOnReply(-1)}
+                        aria-label="Vond ik niet fijn"
+                        className="w-9 h-9 rounded-full bg-white/8 border-none text-lg flex items-center justify-center cursor-pointer"
+                      >
+                        👎
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </>
             )}
             <button
               onClick={() => navigate('/')}

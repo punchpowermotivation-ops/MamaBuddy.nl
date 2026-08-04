@@ -27,6 +27,11 @@ export default function Home() {
   const [checkinDays, setCheckinDays] = useState(new Set());
   const [openLoadCount, setOpenLoadCount] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [showSatisfactionCard, setShowSatisfactionCard] = useState(false);
+  const [satisfactionDismissed, setSatisfactionDismissed] = useState(false);
+  const [stars, setStars] = useState(0);
+  const [satNote, setSatNote] = useState('');
+  const [satSubmitting, setSatSubmitting] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -35,7 +40,7 @@ export default function Home() {
     async function load() {
       const weekStart = startOfWeek(new Date());
 
-      const [insightRes, checkinsRes, loadRes] = await Promise.all([
+      const [insightRes, checkinsRes, loadRes, totalCheckinsRes, satisfactionSignalRes] = await Promise.all([
         supabase
           .from('buddy_memory')
           .select('content')
@@ -54,6 +59,17 @@ export default function Home() {
           .select('id', { count: 'exact', head: true })
           .eq('user_id', user.id)
           .eq('is_done', false),
+        supabase
+          .from('checkins')
+          .select('id', { count: 'exact', head: true })
+          .eq('user_id', user.id),
+        supabase
+          .from('feedback_signals')
+          .select('id')
+          .eq('user_id', user.id)
+          .eq('context', 'app_tevredenheid')
+          .limit(1)
+          .maybeSingle(),
       ]);
 
       if (cancelled) return;
@@ -65,6 +81,7 @@ export default function Home() {
       );
       setCheckinDays(days);
       setOpenLoadCount(loadRes.count ?? 0);
+      setShowSatisfactionCard((totalCheckinsRes.count ?? 0) === 7 && !satisfactionSignalRes.data);
       setLoading(false);
     }
 
@@ -74,12 +91,68 @@ export default function Home() {
     };
   }, [user]);
 
+  async function submitSatisfaction() {
+    if (!stars) return;
+    setSatSubmitting(true);
+    await supabase.from('feedback_signals').insert({
+      user_id: user.id,
+      context: 'app_tevredenheid',
+      rating: stars,
+      comment: satNote.trim() || null,
+    });
+    setSatSubmitting(false);
+    setShowSatisfactionCard(false);
+  }
+
   const today = new Date();
   const weekStart = startOfWeek(today);
   const streakCount = [...checkinDays].length;
 
   return (
     <div className="pb-6">
+      {showSatisfactionCard && !satisfactionDismissed && (
+        <div className="mx-5 mt-4 mb-2 bg-white border border-line rounded-[20px] px-5 py-4.5">
+          <h4 className="text-sm font-semibold text-ink mb-3">Hoe bevalt MamaBuddy tot nu toe?</h4>
+          <div className="flex gap-1.5 mb-3">
+            {[1, 2, 3, 4, 5].map((n) => (
+              <button
+                key={n}
+                onClick={() => setStars(n)}
+                aria-label={`${n} ster${n === 1 ? '' : 'ren'}`}
+                className="text-2xl bg-transparent border-none cursor-pointer p-0.5 leading-none"
+              >
+                {n <= stars ? '⭐' : '☆'}
+              </button>
+            ))}
+          </div>
+          {stars > 0 && (
+            <textarea
+              value={satNote}
+              onChange={(e) => setSatNote(e.target.value)}
+              placeholder="Wil je toelichten? (optioneel)"
+              rows={2}
+              maxLength={500}
+              className="w-full bg-sand rounded-xl px-3.5 py-2.5 text-[13.5px] text-ink placeholder:text-muted outline-none resize-none mb-3"
+            />
+          )}
+          <div className="flex gap-3">
+            <button
+              onClick={submitSatisfaction}
+              disabled={!stars || satSubmitting}
+              className="bg-rose text-white rounded-full px-5 py-2 text-[13px] font-semibold border-none cursor-pointer disabled:opacity-50"
+            >
+              Versturen
+            </button>
+            <button
+              onClick={() => setSatisfactionDismissed(true)}
+              className="text-muted text-[13px] bg-transparent border-none cursor-pointer"
+            >
+              Niet nu
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className="px-6 pt-2 pb-4 flex items-center justify-between">
         <div>
           <div className="text-sm text-muted">{greeting(today)} 💛</div>

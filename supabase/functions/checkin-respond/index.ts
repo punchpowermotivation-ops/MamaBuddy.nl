@@ -88,9 +88,11 @@ Deno.serve(async (req) => {
     }
     const cleanNote = typeof note === 'string' && note.trim() ? note.trim().slice(0, 500) : null;
 
-    const { error: insertError } = await supabase
+    const { data: checkinRow, error: insertError } = await supabase
       .from('checkins')
-      .insert({ user_id: user.id, mood, note: cleanNote });
+      .insert({ user_id: user.id, mood, note: cleanNote })
+      .select('id')
+      .single();
     if (insertError) throw insertError;
 
     // Zwaardere stemmingen worden een blijvend feit, zodat een patroon van
@@ -149,7 +151,7 @@ Richtlijnen:
       reply = FALLBACK_RESPONSES[mood];
     }
 
-    return new Response(JSON.stringify({ reply }), {
+    return new Response(JSON.stringify({ reply, checkinId: checkinRow.id }), {
       status: 200,
       headers: { ...corsHeaders, 'content-type': 'application/json' },
     });

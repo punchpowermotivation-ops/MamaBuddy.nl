@@ -66,6 +66,9 @@ export default function Chat() {
   const [errorMsg, setErrorMsg] = useState('');
   const [justSent, setJustSent] = useState(false);
   const [paywallOpen, setPaywallOpen] = useState(false);
+  const [reasonOpen, setReasonOpen] = useState(false);
+  const [reasonText, setReasonText] = useState('');
+  const [reasonSubmitted, setReasonSubmitted] = useState(false);
   const bottomRef = useRef(null);
   const textareaRef = useRef(null);
 
@@ -187,6 +190,17 @@ export default function Chat() {
     send(input);
   }
 
+  async function submitLimitReason() {
+    const value = reasonText.trim();
+    if (!value) return;
+    setReasonSubmitted(true);
+    await supabase.from('feedback_signals').insert({
+      user_id: user.id,
+      context: 'chat_limiet_reden',
+      comment: value,
+    });
+  }
+
   const hasText = input.trim().length > 0;
 
   return (
@@ -294,17 +308,49 @@ export default function Chat() {
             {errorMsg && <p className="text-rose-dark text-sm text-center my-2">{errorMsg}</p>}
 
             {limitReached && (
-              <div className="mx-1 mb-1 mt-2 bg-navy rounded-2xl px-4 py-3 flex items-center gap-3">
-                <p className="flex-1 text-xs text-white/80 leading-snug">
-                  <strong className="text-white">Je hebt je 3 gratis berichten gebruikt.</strong>{' '}
-                  Praat onbeperkt met Premium.
-                </p>
-                <button
-                  onClick={() => setPaywallOpen(true)}
-                  className="bg-rose text-white px-3.5 py-2 rounded-full text-xs font-semibold whitespace-nowrap border-none cursor-pointer"
-                >
-                  Upgrade
-                </button>
+              <div className="mx-1 mb-1 mt-2 bg-navy rounded-2xl px-4 py-3">
+                <div className="flex items-center gap-3">
+                  <p className="flex-1 text-xs text-white/80 leading-snug">
+                    <strong className="text-white">Je hebt je 3 gratis berichten gebruikt.</strong>{' '}
+                    Praat onbeperkt met Premium.
+                  </p>
+                  <button
+                    onClick={() => setPaywallOpen(true)}
+                    className="bg-rose text-white px-3.5 py-2 rounded-full text-xs font-semibold whitespace-nowrap border-none cursor-pointer"
+                  >
+                    Upgrade
+                  </button>
+                </div>
+
+                {reasonSubmitted ? (
+                  <p className="text-[11px] text-white/50 mt-2.5">Bedankt voor je reactie 💛</p>
+                ) : reasonOpen ? (
+                  <div className="mt-3 pt-3 border-t border-white/10">
+                    <textarea
+                      autoFocus
+                      value={reasonText}
+                      onChange={(e) => setReasonText(e.target.value)}
+                      placeholder="Vertel gerust waarom…"
+                      rows={2}
+                      maxLength={500}
+                      className="w-full bg-white/8 border-none rounded-lg px-3 py-2 text-[12.5px] text-white placeholder:text-white/40 outline-none resize-none mb-2"
+                    />
+                    <button
+                      onClick={submitLimitReason}
+                      disabled={!reasonText.trim()}
+                      className="bg-white/15 text-white px-3.5 py-1.5 rounded-full text-[11.5px] font-semibold border-none cursor-pointer disabled:opacity-50"
+                    >
+                      Versturen
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => setReasonOpen(true)}
+                    className="text-[11px] text-white/50 mt-2.5 bg-transparent border-none cursor-pointer underline decoration-white/25 p-0"
+                  >
+                    Liever niet upgraden? Vertel ons waarom
+                  </button>
+                )}
               </div>
             )}
           </>
