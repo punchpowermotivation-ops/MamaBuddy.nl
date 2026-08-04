@@ -191,3 +191,48 @@ body {
 .animate-float-b {
   animation: float-y 4s ease-in-out infinite 2s;
 }
+
+/* ═══ DESKTOP FRAME ═══
+   The logged-in app (everything except the public marketing Landing
+   page) is designed as a phone-width experience: bottom tab bar, full-
+   bleed cards, a fixed chat screen. Letting that stretch across a wide
+   desktop window looks broken, not "responsive" — cards spanning 1800px,
+   a tab bar with four icons scattered across the screen. Instead, above
+   a tablet-ish breakpoint the app is presented as a centered, framed
+   column at its natural phone width, the same pattern most mobile-first
+   PWAs use on desktop (Superhuman, Notion's mobile web, banking apps).
+   Landing.jsx is untouched — it already has its own desktop-first
+   responsive layout and covers the full viewport, so nothing shows
+   through around it. */
+@media (min-width: 768px) {
+  body {
+    background: #ebe2d5;
+  }
+
+  .app-shell,
+  .app-page {
+    max-width: 480px;
+    min-height: 100vh;
+    margin: 0 auto;
+    box-shadow:
+      0 0 0 1px rgba(30, 26, 24, 0.06),
+      0 30px 70px rgba(30, 26, 24, 0.16);
+  }
+
+  .chat-screen {
+    left: 50%;
+    right: auto;
+    width: 480px;
+    transform: translateX(-50%);
+    box-shadow:
+      0 0 0 1px rgba(30, 26, 24, 0.06),
+      0 30px 70px rgba(30, 26, 24, 0.16);
+  }
+
+  .app-tabbar {
+    left: 50%;
+    right: auto;
+    width: 480px;
+    transform: translateX(-50%);
+  }
+}

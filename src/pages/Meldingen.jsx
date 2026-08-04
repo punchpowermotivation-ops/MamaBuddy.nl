@@ -37,7 +37,7 @@ export default function Meldingen() {
   }
 
   return (
-    <div className="pb-6">
+    <div className="app-page pb-6 bg-cream">
       <div className="bg-white border-b border-line flex items-center gap-3 px-4 pb-3.5 pt-[calc(14px+env(safe-area-inset-top))]">
         <button
           onClick={() => navigate('/profiel')}
