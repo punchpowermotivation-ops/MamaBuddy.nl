@@ -192,91 +192,209 @@ body {
   animation: float-y 4s ease-in-out infinite 2s;
 }
 
-/* ═══ DESKTOP FRAME ═══
-   The logged-in app (everything except the public marketing Landing
-   page) is designed as a phone-width experience: bottom tab bar, full-
-   bleed cards, a fixed chat screen. Letting that stretch across a wide
-   desktop window looks broken, not "responsive" — cards spanning 1800px,
-   a tab bar with four icons scattered across the screen. Instead, above
-   a tablet-ish breakpoint the app is presented as a centered, framed
-   *card*: rounded corners, real vertical margin so all four corners are
-   visible, and a soft shadow — the same pattern most mobile-first PWAs
-   use on desktop (Notion's mobile web, Linear, banking apps), not a
-   phone screen accidentally stretched into empty white space.
-   Landing.jsx, Admin.jsx, and the legal pages are untouched — they
-   already have their own desktop-first layouts covering the full
-   viewport width. .theme-dark is a marker class added directly to the
-   handful of screens that use the navy gradient (Welcome's first step,
-   Onboarding's name step, Check-in) so the page background behind the
-   card can match instead of clashing with a light gradient. */
-@media (min-width: 768px) {
-  body {
-    background: linear-gradient(160deg, #fdf8f3 0%, #f5ede4 100%);
-  }
+/* ═══ DESKTOP SPLIT LAYOUT ═══
+   Reference: mamabuddy-desktop-layout.html. Rendered by
+   src/components/AppFrame.jsx, wrapping <Routes> for every screen
+   except Landing (logged out), /admin, and the legal pages — those
+   already have their own full-width desktop layouts.
 
-  body:has(.theme-dark) {
-    background: radial-gradient(ellipse at top, #2d3654 0%, #14110f 100%);
-  }
+   Below 900px this whole block is inert: .app-panel/.app-card use
+   display:contents (transparent to layout — their children render as
+   if these wrappers didn't exist) and .brand-panel is display:none, so
+   the mobile experience — full document scroll, .chat-screen/
+   .app-tabbar/modals position:fixed to the true viewport — is
+   completely unchanged from before this wrapper existed.
 
-  .app-shell,
-  .app-page,
-  .chat-screen {
-    max-width: 480px;
-    margin: 32px auto;
-    min-height: calc(100vh - 64px);
-    border-radius: 32px;
-    overflow: hidden;
-    box-shadow:
-      0 0 60px rgba(30, 26, 24, 0.08),
-      0 30px 70px rgba(30, 26, 24, 0.14);
-  }
-
-  .chat-screen {
-    position: fixed;
-    top: 32px;
-    bottom: 32px;
-    left: 50%;
-    right: auto;
-    width: 480px;
-    height: calc(100vh - 64px);
-    transform: translateX(-50%);
-  }
-
-  .app-tabbar {
-    left: 50%;
-    right: auto;
-    bottom: 32px;
-    width: 480px;
-    transform: translateX(-50%);
-    border-radius: 20px;
-  }
+   Above 900px, .app-card gets `transform: translateZ(0)`, which per
+   the CSS spec makes it the *containing block* for every
+   position:fixed descendant inside it. .chat-screen, .app-tabbar, and
+   every bottom-sheet modal (PaywallModal, FeedbackModal, Chat's memory
+   sheet) start sizing/positioning themselves relative to the 420px
+   card instead of the real browser window — with zero changes needed
+   to any of those components' own CSS. .app-card's overflow:hidden
+   then clips them to its rounded corners, same as any other child. */
+.desktop-wrap {
+  min-height: 100vh;
 }
 
-/* ═══ DESKTOP MARKETING PANEL ═══
-   Fills the empty gutter beside the framed app card on wide windows
-   with a static, on-brand message instead of leaving it blank — mainly
-   for anyone who opens a shared MamaBuddy link on a laptop. Purely
-   decorative and fixed-positioned, so it never affects the app card's
-   own centering/layout. Only shown where there's real empty space to
-   fill (DesktopMarketingPanel.jsx hides it on Landing/Admin, which
-   already use the full viewport width). */
-.desktop-marketing-panel {
+.brand-panel {
   display: none;
 }
 
-@media (min-width: 1180px) {
-  .desktop-marketing-panel {
+.app-panel,
+.app-card {
+  display: contents;
+}
+
+@media (min-width: 900px) {
+  .desktop-wrap {
+    display: flex;
+    background: var(--color-cream);
+  }
+
+  .brand-panel {
+    display: flex;
+    flex-direction: column;
+    width: 420px;
+    flex-shrink: 0;
+    background: linear-gradient(165deg, #1e2640 0%, #14110f 100%);
+    padding: 56px 48px;
+    position: relative;
+    overflow: hidden;
+  }
+  .brand-panel::before {
+    content: '';
+    position: absolute;
+    top: -100px;
+    right: -100px;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(242, 86, 122, 0.18) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .brand-panel::after {
+    content: '';
+    position: absolute;
+    bottom: 60px;
+    left: -80px;
+    width: 220px;
+    height: 220px;
+    background: radial-gradient(circle, rgba(242, 86, 122, 0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .brand-logo {
+    margin-bottom: 64px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .brand-content {
+    flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    position: fixed;
-    z-index: 1;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: min(360px, calc(50vw - 340px));
-    padding: 0 48px;
-    background: linear-gradient(160deg, var(--color-navy) 0%, #14110f 100%);
-    border-radius: 0 32px 32px 0;
+    position: relative;
+    z-index: 2;
+  }
+  .brand-content h1 {
+    font-family: var(--font-serif);
+    font-size: 34px;
+    font-weight: 400;
+    color: white;
+    line-height: 1.18;
+    margin-bottom: 18px;
+    max-width: 320px;
+  }
+  .brand-content h1 em {
+    font-style: italic;
+    color: var(--color-rose);
+  }
+  .brand-content p {
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.6);
+    line-height: 1.7;
+    font-weight: 300;
+    max-width: 300px;
+    margin-bottom: 36px;
+  }
+
+  .brand-features {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    position: relative;
+    z-index: 2;
+  }
+  .brand-feat {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .brand-feat-icon {
+    width: 34px;
+    height: 34px;
+    background: rgba(242, 86, 122, 0.15);
+    border: 1px solid rgba(242, 86, 122, 0.25);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+  .brand-feat span {
+    font-size: 13.5px;
+    color: rgba(255, 255, 255, 0.75);
+  }
+
+  .brand-footer {
+    position: relative;
+    z-index: 2;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.35);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .brand-footer svg {
+    width: 12px;
+    height: 12px;
+    stroke: rgba(255, 255, 255, 0.35);
+    fill: none;
+  }
+
+  .app-panel {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    background:
+      radial-gradient(ellipse at 30% 20%, rgba(242, 86, 122, 0.04) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 80%, rgba(45, 140, 106, 0.03) 0%, transparent 50%),
+      var(--color-cream);
+    position: relative;
+  }
+
+  .app-card {
+    display: block;
+    width: 100%;
+    max-width: 420px;
+    height: min(780px, 90vh);
+    background: var(--color-cream);
+    border-radius: 28px;
+    box-shadow:
+      0 30px 80px rgba(30, 26, 24, 0.14),
+      0 4px 24px rgba(30, 26, 24, 0.06),
+      0 0 0 1px rgba(30, 26, 24, 0.04);
+    overflow: hidden;
+    position: relative;
+    transform: translateZ(0);
+  }
+
+  /* Screens that normally rely on the whole document scrolling need
+     their own internal scroll now that .app-card is a fixed-height,
+     overflow:hidden box. .chat-screen/.app-tabbar/modals need no
+     equivalent change — they're position:fixed, so the transform above
+     already makes them fill/anchor to .app-card automatically. */
+  .app-shell,
+  .app-page {
+    height: 100%;
+    min-height: 0;
+    overflow-y: auto;
+  }
+
+  /* .app-content normally demands a full real-viewport height
+     (min-height:100dvh) so mobile's page-scroll model has room to
+     work. Nested inside the now height-capped .app-shell, that would
+     force a mostly-empty ~780px+ of scroll before reaching real
+     content — let it size to its own content instead. */
+  .app-content {
+    min-height: 0;
+  }
+
+  .app-tabbar {
+    border-radius: 0;
   }
 }
